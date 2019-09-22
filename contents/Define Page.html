@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Measurement Tool</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+   
+    
+    <style>@import url('https://fonts.googleapis.com/css?family=Montserrat:500');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 3px;
+            background-color: #24252A;
+        }
+        
+        li, a {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
+            font-size: 20px;
+            color: #edf0f1;
+            text-decoration: none;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 10%;    
+        }
+        
+        p {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
+            font-size: 20px;
+            color: #edf0f1;
+            text-decoration: none;
+        }
+        
+        div {
+            width:100%;
+            height:100%;  
+        }
+        
+        .main{
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar{
+            flex: 0 0 auto;
+            align-content: start;
+        }
+        
+        .intro{
+            flex: 1 1 auto; 
+            text-align: center;
+        }
+        
+        .logo {
+            cursor: pointer;
+        }
+        
+        .nav__links {
+            list-style: none;
+        }
+        
+        .nav__links li {
+            display: inline-block;
+            padding: 10px 20px;
+            word-wrap: break-word;    
+        }
+        
+        .nav__links li a {
+            transition: all 0.3s ease 0s;
+        }
+        
+        .nav__links li a:hover:not(.active) {
+            background-color: rgba(0,136,169,0.5);
+            border: none;
+            border-radius: 50px;
+        }
+        
+        .active {
+            background-color: rgba(0,136,169,1);
+            border: none;
+            border-radius: 50px;	
+        }
+        .button{
+            padding: 0;
+            border: none;
+            background: none;
+        }
+       
+        </style>
+</head>
+<body>
+    <div class="main">
+    <div class="navbar">
+    <header>
+        <a href="Define Page.html"><img class="logo" src="../images/logo.png" alt="logo"></a>
+        <nav>
+            <ul class="nav__links">
+                <li><a href="contents/databases.html">Databases</a></li>
+                <li><a href="tests.html">Tests</a></li>
+                <li><a href="Logs.html">Logs</a></li>
+            </ul>
+        </nav>
+    </header>
+    </div>
+    <div class="intro">
+            <p> 
+                    <br /> <br /> <br /> <br /> <br /> <br /> <br />
+               <h1 align="center" ><i> NO DATABASES YET</i></h1> 
+            </p>
+            
+    </div>
+    <div class="container" align="center">
+            <br/><br/><br/><br/><br/>
+                <button type="button" class="button" >
+                    <a href="contents/databases.html"><h4><u>+CREATE A NEW DATABASE</u></h4></a>
+                </button>
+        </div>
+</body>
+</html>
