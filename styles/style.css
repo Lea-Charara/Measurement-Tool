@@ -69,7 +69,6 @@ div {
 }
 
 .nav__links li a:hover:not(.active) {
-    /* color: #0088a9; */
     background-color: rgba(0,136,169,0.5);
     border: none;
     border-radius: 50px;
@@ -78,5 +77,5 @@ div {
 .active {
     background-color: rgba(0,136,169,1);
     border: none;
-    border-radius: 50px;
+    border-radius: 50px;	
 }

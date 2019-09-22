@@ -58,7 +58,7 @@ hr{
     position: absolute;
     left: 50%;
     margin-left: -3px;
-    top: 77px;
+    top: 77px; /* the little line at the top is annoying I tired using percentages but failed */
   }
 
 .all {
