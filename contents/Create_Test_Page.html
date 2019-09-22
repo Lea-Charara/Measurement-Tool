@@ -5,70 +5,73 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="../styles/Create_Test_Page.css">
     <script src="../scripts/Create_Test_Page.js"></script>
+
     </head>
     
     
     <body>
     
         <div class="Header">
-        <button class = "btn btn-danger custom cancel" onClick = "location.href='tests.html'">CANCEL</button>
+        <button class = "btn btn-danger custom cancel" onClick = "Cancel()">CANCEL</button>
         <h3 class = "title">CREATE TEST</h3>
-        <button class = "btn btn-success custom done" onClick = "location.href='tests.html'">DONE</button>
-        </div>
+        <button class = "btn btn-success custom done" onClick = "checkAll()">DONE</button>
+       
+        </div>  
         <hr>
         <div class ="all">
         <div class = "Left-Fields">
             
-            <label class = "left-labels names">Name</label>
-            <input type = "text" class = "NameInput left-input">
+            <label class = "left-labels names" >Name*</label>
+            <input type = "text" class = "NameInput left-input" id="TestNameField">
             
             
             
-            <label class = "left-labels names">Descritpion</label>
-            <textarea class = "DescInput left-input"></textarea>
+            <label class = "left-labels names" >Description</label>
+            <textarea  class = "DescInput left-input" id="DescriptionField"></textarea>
            
 
             
-            <label class = "left-labels names">Number of query repetitions</label>
-            <input type = "text" class = "Query_nbInput left-input">
+            <label class = "left-labels names" >Number of query repetitions*</label>
+            <input type = "number" class = "Query_nbInput left-input" id="QueryNBField">
             
 
             
-            <label class = "left-labels names">Timeout (in sec)</label>
-            <input type = "text" class = "TimeoutInput left-input">
+            <label class = "left-labels names">Timeout (in sec)*</label>
+            <input type = "number" class = "Query_TimeoutInput left-input" id="TimeoutField">
            
 
-
+            
         </div>
 
         <div class="vl"></div>
+
         <div class="right_fields">
         <label>Available databases</label>
         <div class="container">
         <ul>
             <li>
-                <input class= "checkbox" type="checkbox" /> DB1 <br />
+                <input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> DB1 <br />
             </li>
 
             <li>
-                <input class= "checkbox" type="checkbox" /> DB2 <br />
+                <input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> DB2 <br />
             </li>
 
             <li>
-                <input class= "checkbox" type="checkbox" /> DB3 <br />
+                <input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> DB3 <br />
             </li>
 
             <li>
-                <input class= "checkbox" type="checkbox" /> DB4 <br />
+                <input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> DB4 <br />
             </li>
 
                
         </ul>
-        </div>
+    </div>
 
-        <label>Queries</label>
+        <label class="QueryLabel" id = "QueryLabel">Queries</label>
         <container class="queries_fields">
-        <ul>
+        <ul class="Databases">
                 <li >
                     <input class="queries" type="text" placeholder="db1 query"/><br />
                 </li>
@@ -92,6 +95,9 @@
     </div>
 
 
+
     </div >
+    <div id="snackbar">Test Successfully Created</div>
     </body>
+
 </html>
