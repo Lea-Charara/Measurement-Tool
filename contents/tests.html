@@ -1,13 +1,21 @@
 <!DOCTYPE html>
     <head>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="../scripts/jquery.mCustomScrollbar.concat.min.js"></script>
+        <link rel="stylesheet" href="../styles/jquery.mCustomScrollbar.css" />
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Tests</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/tests.css">
+        
     </head>
     <body>
+        <div class="main">
+        <div class="navbar">
         <header>
             <a href="../index.html"><img class="logo" src="../images/logo.png" alt="logo"></a>
             <nav>
@@ -18,16 +26,49 @@
                 </ul>
             </nav>
         </header>
-
+        </div>
+        <div class="tests">
+            
         <div id="no_tests">
             <p>No tests yet.<br><br>Create a <a href="Create_Test_Page.html"><u>New Test</u></a>?</p>
         </div>
 
-        <div id="tests" class="container">
-            <ul>
-                <li><p>hi</p></li>
+        <div class="container">
+            <button class="w3-button w3-green" onclick="move()">Click Me</button> 
+            <ul class="test_preview">                
+                    <div id="myBar" class="w3-container w3-green w3-round-xlarge w3-center" style="width:5%">5%</div>
             </ul>
         </div>
+        </div>
+        </div>
+
+
+        <script>
+                (function($){
+                    $(window).on("load",function(){
+                        $(".container").mCustomScrollbar({
+                            axis:"y",
+                            theme: "minimal"
+                        });
+                    });
+                })(jQuery);
+
+                function move() {
+                    var elem = document.getElementById("myBar");   
+                    var width = 20;
+                    var id = setInterval(frame, 10);
+                    function frame() {
+                        if (width >= 100) {
+                            clearInterval(id);
+                        } else {
+                            width++; 
+                        elem.style.width = width + '%'; 
+                        elem.innerHTML = width * 1  + '%';
+                        }
+                    }
+                }
+
+        </script>
 
     </body>
 </html>
