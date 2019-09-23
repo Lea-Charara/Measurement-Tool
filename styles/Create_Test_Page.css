@@ -93,8 +93,8 @@ hr{
 .right_fields{
     display: grid;
     gap: 3% 7%;
-    margin-right: 3%;
-    margin-left: 5%;
+    margin-right: 4%;
+    margin-left: 10%;
 }
 
 body{
