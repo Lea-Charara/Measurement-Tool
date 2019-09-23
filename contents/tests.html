@@ -1,6 +1,7 @@
 <!DOCTYPE html>
     <head>
 
+            <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="../scripts/jquery.mCustomScrollbar.concat.min.js"></script>
         <link rel="stylesheet" href="../styles/jquery.mCustomScrollbar.css" />
@@ -32,11 +33,14 @@
         <div id="no_tests">
             <p>No tests yet.<br><br>Create a <a href="Create_Test_Page.html"><u>New Test</u></a>?</p>
         </div>
+        <button class="w3-button w3-green" onclick="move()">Click Me</button> 
 
         <div class="container">
-            <button class="w3-button w3-green" onclick="move()">Click Me</button> 
-            <ul class="test_preview">                
-                    <div id="myBar" class="w3-container w3-green w3-round-xlarge w3-center" style="width:5%">5%</div>
+            <ul class="test_preview">
+                    <div id="test-1" class="test">  
+                        Test 1          
+                        <div id="myBar" class="w3-container w3-green w3-round-xlarge w3-center" style="width:5%">5%</div>
+                    </div>
             </ul>
         </div>
         </div>
