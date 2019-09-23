@@ -37,9 +37,13 @@ function TextBoxAppear()
     if(nbofchecked>0){
         
         document.getElementById("QueryLabel").style.visibility = "visible";
+        document.getElementById("QueriesContainer").style.visibility = "visible";
+
     }
     else{
         document.getElementById("QueryLabel").style.visibility = "hidden";
+        document.getElementById("QueriesContainer").style.visibility = "hidden";
+
     }
     console.log(nbofchecked);
     for(i=0;i<nbofchecked;i++){
