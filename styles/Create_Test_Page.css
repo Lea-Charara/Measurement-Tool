@@ -55,11 +55,11 @@ hr{
     
     width: 0;
     height: 100%;
-    position: absolute;
+    position: fixed;
     border: 1px solid gray;
     margin-top: -50px;
     margin-left: 50%;
-    display: inline-block;
+ 
     
   }
 
@@ -93,9 +93,9 @@ hr{
 .right_fields{
     display: grid;
     gap: 3% 7%;
-    margin-right: 4%;
-    margin-left: 10%;
+    
 }
+
 
 body{
     color:white;
