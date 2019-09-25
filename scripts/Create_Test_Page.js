@@ -73,17 +73,28 @@ function checkQueries(){
     }
     if(nbofentered == nbofchecked){
         return true;
-    }
+        
     alert("please enter all the queries fields");
     return false;
+}
 }
 function checkAll(){
     if(checkName() && checkQueryNB() && checkTimeout() && checkQueries()) 
     {
-        
+        localStorage.clear();
+        if (typeof(Storage) !== "undefined") {
+            if(localStorage.length == 0){
+                localStorage.setItem(localStorage.length,[document.getElementById("TestNameField").value])
+                
+            }
+            else{
+                localStorage.setItem(localStorage.length,[document.getElementById("TestNameField").value])
+            }
+    }
         var x = document.getElementById("snackbar");
         x.className = "show";
         setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+
     }
 }
 

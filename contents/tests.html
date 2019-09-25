@@ -12,9 +12,10 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="../styles/tests.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         
     </head>
-    <body>
+    <body >
         <div class="main">
         <div class="navbar">
         <header>
@@ -70,6 +71,14 @@
                         elem.innerHTML = width * 1  + '%';
                         }
                     }
+                }
+
+                function ShowTests(){
+                    for(i = 0;i < localStorage.length;i++){
+                    console.log(localStorage.getItem(i));
+                    $(".test_preview div").after("<div id= \"test-1\" class=\"test\">"+localStorage.getItem(i)+" <div id=\"myBar\" class=\"w3-container w3-green w3-round-xlarge w3-center\" style=\"width:5%\">5%</div></div>");
+                    }
+                    
                 }
 
         </script>
