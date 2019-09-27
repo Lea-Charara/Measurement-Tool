@@ -1,87 +1,58 @@
+
 <!DOCTYPE html>
-    <head>
-
-            <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="../scripts/jquery.mCustomScrollbar.concat.min.js"></script>
-        <link rel="stylesheet" href="../styles/jquery.mCustomScrollbar.css" />
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Tests</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="../styles/tests.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        
-    </head>
-    <body >
-        <div class="main">
-        <div class="navbar">
-        <header>
-            <a href="../index.html"><img class="logo" src="../images/logo.png" alt="logo"></a>
-            <nav>
-                <ul class="nav__links">
-                    <li><a href="Databases.html">Databases</a></li>
-                    <li><a class="active" href="tests.html">Tests</a></li>
-                    <li><a href="Logs.html">Logs</a></li>
-                </ul>
-            </nav>
-        </header>
-        </div>
-        <div class="tests">
-            
-        <div id="no_tests">
-            <p>No tests yet.<br><br>Create a <a href="Create_Test_Page.html"><u>New Test</u></a>?</p>
-        </div>
-        <button class="w3-button w3-green" onclick="move()">Click Me</button> 
-
-        <div class="container">
-            <ul class="test_preview">
-                    <div id="test-1" class="test">  
-                        Test 1          
-                        <div id="myBar" class="w3-container w3-green w3-round-xlarge w3-center" style="width:5%">5%</div>
-                    </div>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="../scripts/jquery.mCustomScrollbar.concat.min.js"></script>
+    <link rel="stylesheet" href="../styles/jquery.mCustomScrollbar.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Tests</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../styles/tests-beta.css">
+</head>
+<body>
+    <div class="main">
+    <div class="navbar">
+    <header>
+        <a href="../index.html"><img class="logo" src="../images/logo.png" alt="logo"></a>
+        <nav>
+            <ul class="nav__links">
+                <li><a href="Databases.html">Databases</a></li>
+                <li><a class="active" href="tests.html">Tests</a></li>
+                <li><a href="Logs.html">Logs</a></li>
             </ul>
-        </div>
-        </div>
-        </div>
+        </nav>
+    </header>
+    </div>
 
+    <div id="no_tests" align="center">
+        <p>No tests yet.<br><br>Create a <a href="Create_Test_Page.html"><u>New Test</u></a>?</p>
+    </div>
 
-        <script>
-                (function($){
-                    $(window).on("load",function(){
-                        $(".container").mCustomScrollbar({
-                            axis:"y",
-                            theme: "minimal"
-                        });
-                    });
-                })(jQuery);
+    <div class="tests" id="tests" align="center">
+        <!-- <div class ="test" id="test-x">
+        <p>Test</p>
+        <div class="inner">
+        <div class="loadbar w3-round-xlarge" id="barDiv" style="width: 70%">
+        <div id="bar" class="loadbar w3-round-xlarge" style="width:0%;height: 20px"></div></div>
+        &emsp;<p id="prog">0%</p>&emsp;
+        <button type="button" id="play" class="button"><i class="fa fa-play" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i>
+        </button><button type="button" id="pause" class="button" disabled><i class="fa fa-pause" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i>
+        </button><button type="button" id="stop" class="button" disabled><i class="fa fa-stop" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i>
+        </button>&emsp;&emsp;<a id="edit" href="Create_Test_Page.html"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></a>
+        <i id="view" class="fa fa-eye" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i>
+        </div> -->
+    </div>
+    
+    </div>
 
-                function move() {
-                    var elem = document.getElementById("myBar");   
-                    var width = 20;
-                    var id = setInterval(frame, 10);
-                    function frame() {
-                        if (width >= 100) {
-                            clearInterval(id);
-                        } else {
-                            width++; 
-                        elem.style.width = width + '%'; 
-                        elem.innerHTML = width * 1  + '%';
-                        }
-                    }
-                }
-
-                function ShowTests(){
-                    for(i = 0;i < localStorage.length;i++){
-                    console.log(localStorage.getItem(i));
-                    $(".test_preview div").after("<div id= \"test-1\" class=\"test\">"+localStorage.getItem(i)+" <div id=\"myBar\" class=\"w3-container w3-green w3-round-xlarge w3-center\" style=\"width:5%\">5%</div></div>");
-                    }
-                    
-                }
-
-        </script>
-
-    </body>
+    <div id="newTest" align="center">
+    <a href="Create_Test_Page.html"><h4><u>+ Add a new test</u></h4></a>
+    </div>
+    </div>
+<script src="../scripts/tests.js"></script>      
+</body>
 </html>

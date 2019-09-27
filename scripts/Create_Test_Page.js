@@ -81,16 +81,15 @@ function checkQueries(){
 function checkAll(){
     if(checkName() && checkQueryNB() && checkTimeout() && checkQueries()) 
     {
-        localStorage.clear();
         if (typeof(Storage) !== "undefined") {
-            if(localStorage.length == 0){
-                localStorage.setItem(localStorage.length,[document.getElementById("TestNameField").value])
-                
+            var test = {
+                Name: document.getElementById("TestNameField").value,
+                Description: document.getElementById("DescriptionField").value,
+                QueryNB: document.getElementById("QueryNBField").value,
+                Timeout: document.getElementById("TimeoutField").value
             }
-            else{
-                localStorage.setItem(localStorage.length,[document.getElementById("TestNameField").value])
-            }
-    }
+            localStorage.setItem(localStorage.length,JSON.stringify(test));            
+        }
         var x = document.getElementById("snackbar");
         x.className = "show";
         setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
