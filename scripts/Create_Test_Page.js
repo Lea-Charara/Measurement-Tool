@@ -19,6 +19,7 @@ function checkTimeout(){
     if(document.getElementById("TimeoutField").value.length > 0 && document.getElementById("TimeoutField").value > 0){
         return true;
     }
+    alert("Please enter a valid timeout number")
     return false;
 }
 
