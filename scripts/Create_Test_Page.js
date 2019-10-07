@@ -1,13 +1,18 @@
+
 function showdb(){
     $.ajax({
         url: "http://127.0.0.1:8000/databases/getdatabases/",
     
         dataType: "json",
         success: function( response ) {
+            var databasetype = [];
                 for(i = 0;i < response.length;i++){
-                    
-                    $("#db ul li:last").after('<input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
-                    $("#QueriesContainer").append('<input class="queries" type="text" placeholder='+ response[i].name +'><br />');
+                    console.log(response[i].dbtype_id);
+                    $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
+                    if(!databasetype.includes(response[i].dbtype_id)){
+                        databasetype.push(response[i].dbtype_id);
+                        $("#QueriesContainer").append('<input class="queries '+ response[i].dbtype_id+ ' '+ response[i].name+'" type="text" placeholder='+ response[i].name +'><br />');
+                    }
 
                 }
             }
@@ -45,11 +50,17 @@ function TextBoxAppear()
     
     var nbofchecked = 0
     var index = document.getElementsByClassName("checkbox");
+    var textboxestype = [];
     var textboxes = document.getElementsByClassName("queries");
     for(i=0;i<index.length;i++){
         if(index[i].checked){
             nbofchecked++;
+            classname = $(index[i]).attr('class').split(' ')[1];
+            console.log(classname);
+            textboxestype.push(classname);
+            document.getElementsByClassName("queries "+classname)[0].style.visibility = "visible";
          }
+
     }
     if(nbofchecked>0){
         
@@ -62,13 +73,13 @@ function TextBoxAppear()
         document.getElementById("QueriesContainer").style.visibility = "hidden";
 
     }
+    for(i=0;i<textboxes.length;i++){
+        classname = $(textboxes[i]).attr('class').split(' ')[1];
+        if(!textboxestype.includes(classname)){
+            textboxes[i].style.visibility = "hidden";
+        }
+    }
     
-    for(i=0;i<nbofchecked;i++){
-       textboxes[i].style.visibility = "visible";
-    }
-    for(i=nbofchecked;i<textboxes.length;i++){
-        textboxes[i].style.visibility = "hidden";
-    }
 }
 
 function checkQueries(){
@@ -108,27 +119,30 @@ function checkAll(){
             contentType: "application/json; charset=utf-8",
             success: function(){
 
-                // var textboxes = document.getElementsByClassName("queries");
-                // for(i=0;i<textboxes.length;i++){
-                // $.ajax({
-                //     type: "POST",
-                //     url: "http://127.0.0.1:8000/dbtests/adddbtest/",
-                //     // The key needs to match your method's input parameter (case-sensitive).
-                //     data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
-                //     dbid: textboxes[i].placeholder, query : textboxes[i].value}),
-                //     contentType: "application/json; charset=utf-8",
-                //     success: function(){
-                //         
-                //     }
-                // });
-                var x = document.getElementById("snackbar");
-                x.className = "show";
-                setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+                var textboxes = document.getElementsByClassName("queries");
+                for(i=0;i<textboxes.length;i++){
+                    if(textboxes[i].style.visibility == "visible"){
+                        $.ajax({
+                            type: "POST",
+                            url: "http://127.0.0.1:8000/dbtests/adddbtest/",
+                            // The key needs to match your method's input parameter (case-sensitive).
+                            data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
+                            dbid: $(textboxes[i]).attr('class').split(' ')[2], query : textboxes[i].value}),
+                            contentType: "application/json; charset=utf-8",
+                            success: function(){
+                                var x = document.getElementById("snackbar");
+                                x.className = "show";
+                                setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+                                        
+                    }
+                });}
+                
             }
                 
-                
+        }
             
             });
+        
         
     }
 }
