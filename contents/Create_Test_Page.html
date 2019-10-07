@@ -5,11 +5,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="../styles/Create_Test_Page.css">
     <script src="../scripts/Create_Test_Page.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     </head>
     
     
-    <body>
+    <body onload="showdb()">
     
         <div class="Header">
         <button class = "btn btn-danger custom cancel" onClick = "Cancel()">CANCEL</button>
@@ -47,49 +48,17 @@
 
         <div class="right_fields">
         <label>Available databases</label>
-        <div class="container">
+        <div class="container" id = "db">
         <ul>
-            <li>
-                <input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> DB1 <br />
-            </li>
-
-            <li>
-                <input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> DB2 <br />
-            </li>
-
-            <li>
-                <input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> DB3 <br />
-            </li>
-
-            <li>
-                <input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> DB4 <br />
-            </li>
-            
-               
+            <li></li>
         </ul>
     </div>
 
         <label class="QueryLabel" id = "QueryLabel">Queries</label>
         <container class="queries_fields">
         <ul class="QueriesContainer" id = "QueriesContainer">
-                <li >
-                    <input class="queries" type="text" placeholder="db1 query"/><br />
-                </li>
-    
-                <li >
-                    <input class="queries" type="text" placeholder="db2 query"/><br />
-                </li>
-    
-                <li >
-                   <input class="queries" type="text" placeholder="db3 query"/><br />
-                </li>
-    
-                <li >
-                    <input class="queries" type="text" placeholder="db4 query"/><br/>
-                </li>
-    
-                   
-            </ul>
+                <li></li>
+        </ul>
         </container>
         
     </div>

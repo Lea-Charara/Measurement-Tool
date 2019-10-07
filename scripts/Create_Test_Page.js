@@ -1,3 +1,20 @@
+function showdb(){
+    $.ajax({
+        url: "http://127.0.0.1:8000/databases/getdatabases/",
+    
+        dataType: "json",
+        success: function( response ) {
+                for(i = 0;i < response.length;i++){
+                    
+                    $("#db ul li:last").after('<input class= "checkbox" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
+                    $("#QueriesContainer").append('<input class="queries" type="text" placeholder='+ response[i].name +'><br />');
+
+                }
+            }
+});
+}
+
+
 function checkName(){
     if(document.getElementById("TestNameField").value.length > 0){
         return true;
@@ -29,7 +46,6 @@ function TextBoxAppear()
     var nbofchecked = 0
     var index = document.getElementsByClassName("checkbox");
     var textboxes = document.getElementsByClassName("queries");
-    console.log(textboxes.length);
     for(i=0;i<index.length;i++){
         if(index[i].checked){
             nbofchecked++;
@@ -46,7 +62,7 @@ function TextBoxAppear()
         document.getElementById("QueriesContainer").style.visibility = "hidden";
 
     }
-    console.log(nbofchecked);
+    
     for(i=0;i<nbofchecked;i++){
        textboxes[i].style.visibility = "visible";
     }
@@ -67,7 +83,6 @@ function checkQueries(){
             }
          }
     }
-    console.log(nbofchecked +" "+ nbofentered )
     if(nbofchecked == 0){
         alert("Please choose at least one of the available databases");
         return false;
@@ -82,19 +97,39 @@ function checkQueries(){
 function checkAll(){
     if(checkName() && checkQueryNB() && checkTimeout() && checkQueries()) 
     {
-        if (typeof(Storage) !== "undefined") {
-            var test = {
-                Name: document.getElementById("TestNameField").value,
-                Description: document.getElementById("DescriptionField").value,
-                QueryNB: document.getElementById("QueryNBField").value,
-                Timeout: document.getElementById("TimeoutField").value
-            }
-            localStorage.setItem(localStorage.length,JSON.stringify(test));            
-        }
-        var x = document.getElementById("snackbar");
-        x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:8000/tests/addtest/",
+            // The key needs to match your method's input parameter (case-sensitive).
+            data: JSON.stringify({ name: document.getElementById("TestNameField").value,
+            description: document.getElementById("DescriptionField").value,
+            repetition: document.getElementById("QueryNBField").value,
+            timeout: document.getElementById("TimeoutField").value }),
+            contentType: "application/json; charset=utf-8",
+            success: function(){
 
+                // var textboxes = document.getElementsByClassName("queries");
+                // for(i=0;i<textboxes.length;i++){
+                // $.ajax({
+                //     type: "POST",
+                //     url: "http://127.0.0.1:8000/dbtests/adddbtest/",
+                //     // The key needs to match your method's input parameter (case-sensitive).
+                //     data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
+                //     dbid: textboxes[i].placeholder, query : textboxes[i].value}),
+                //     contentType: "application/json; charset=utf-8",
+                //     success: function(){
+                //         
+                //     }
+                // });
+                var x = document.getElementById("snackbar");
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+            }
+                
+                
+            
+            });
+        
     }
 }
 
