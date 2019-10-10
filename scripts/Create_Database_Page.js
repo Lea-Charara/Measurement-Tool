@@ -30,11 +30,27 @@ function myFunction() {
    }
    else
    {
-     var x = document.getElementById("snackbar");
-     x.className = "show";
-     setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'Databases.html'; }, 1500);
+      $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:8000/databases/adddatabase/",
+            // The key needs to match your method's input parameter (case-sensitive).
+            data:JSON.stringify({name:document.getElementById("InputName").value,
+            user: document.getElementById("InputUser").value,
+            dbtype: "Cassandra",
+            password: document.getElementById("myInput").value,
+            host: document.getElementById("InputHost").value,
+            port:  document.getElementById("InputPort").value}),
+            
+      
+                  
+            contentType: "application/json; charset=utf-8",
+            success: function(){
+                  var x = document.getElementById("snackbar");
+                  x.className = "show";
+                  setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'Databases.html'; }, 1500);
     
 
    }
 
  }
+      )}}
