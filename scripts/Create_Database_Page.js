@@ -6,6 +6,16 @@ function myFunction() {
     x.type = "password";
     }
  }
+
+ function CheckedType(){
+       var types = document.getElementsByClassName("radio");
+       for (i=0;i<types.length;i++){
+             if (types[i].checked){
+                   return types[i].value
+             }
+
+       }
+ }
     function CheckFields(){
     
     var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
@@ -30,13 +40,14 @@ function myFunction() {
    }
    else
    {
+         console.log(CheckedType())
       $.ajax({
             type: "POST",
-            url: "http://127.0.0.1:8000/databases/adddatabase/",
+            url: "https://measurementtoolbackend.herokuapp.com/databases/adddatabase/",
             // The key needs to match your method's input parameter (case-sensitive).
             data:JSON.stringify({name:document.getElementById("InputName").value,
             user: document.getElementById("InputUser").value,
-            dbtype: "Cassandra",
+            dbtype: CheckedType(),
             password: document.getElementById("myInput").value,
             host: document.getElementById("InputHost").value,
             port:  document.getElementById("InputPort").value}),
