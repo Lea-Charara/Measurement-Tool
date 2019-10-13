@@ -67,7 +67,6 @@ $(window).on("load",function(){
     
     $.ajax({
         url: "https://measurementtoolbackend.herokuapp.com/tests/gettests/",
-    
         dataType: "json",
         success: function( response ) {
             if(response.length == 0){

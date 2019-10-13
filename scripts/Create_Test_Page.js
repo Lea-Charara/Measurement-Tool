@@ -1,5 +1,6 @@
 
 function showdb(){
+    var responseid;
     $.ajax({
         url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
     
@@ -11,7 +12,20 @@ function showdb(){
                     $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
                     if(!databasetype.includes(response[i].dbtype_id)){
                         databasetype.push(response[i].dbtype_id);
-                        $("#QueriesContainer").append('<input class="queries '+ response[i].dbtype_id+ ' '+ response[i].name+'" type="text" placeholder='+ response[i].name +'><br />');
+                        var responseid = response[i];
+                        var resname = "";
+                        $("#qr ul li:last").after('<input class="queries '+ responseid.dbtype_id+ ' '+ responseid.name+'" type="text" placeholder='+ resname+ +'><br />');
+                        $.ajax({
+                            async: false,
+                            url:"https://measurementtoolbackend.herokuapp.com/types/getypename/",
+                            dataType: "json",
+                            
+                            success: function(res){
+                                resname = res[responseid.dbtype_id-1].typename;
+                            }
+                        });
+                        $("#QueriesContainer").append('<input class="queries '+ response[i].dbtype_id+ ' '+ response[i].name+'" type="text" placeholder='+ resname +'><br />');
+                        
                     }
 
                 }
