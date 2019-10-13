@@ -66,7 +66,7 @@ $("#tests").on('click','#stop', function(){
 $(window).on("load",function(){
     
     $.ajax({
-        url: "http://127.0.0.1:8000/tests/gettests/",
+        url: "https://measurementtoolbackend.herokuapp.com/tests/gettests/",
     
         dataType: "json",
         success: function( response ) {

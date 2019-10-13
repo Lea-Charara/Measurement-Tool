@@ -1,7 +1,7 @@
 
 function showdb(){
     $.ajax({
-        url: "http://127.0.0.1:8000/databases/getdatabases/",
+        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
     
         dataType: "json",
         success: function( response ) {
@@ -110,7 +110,7 @@ function checkAll(){
     {
         $.ajax({
             type: "POST",
-            url: "http://127.0.0.1:8000/tests/addtest/",
+            url: "https://measurementtoolbackend.herokuapp.com/tests/addtest/",
             // The key needs to match your method's input parameter (case-sensitive).
             data: JSON.stringify({ name: document.getElementById("TestNameField").value,
             description: document.getElementById("DescriptionField").value,
@@ -124,7 +124,7 @@ function checkAll(){
                     if(textboxes[i].style.visibility == "visible"){
                         $.ajax({
                             type: "POST",
-                            url: "http://127.0.0.1:8000/dbtests/adddbtest/",
+                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/adddbtest/",
                             // The key needs to match your method's input parameter (case-sensitive).
                             data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
                             dbid: $(textboxes[i]).attr('class').split(' ')[2], query : textboxes[i].value}),
