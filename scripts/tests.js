@@ -84,14 +84,12 @@ $(window).on("load",function(){
                     $("#tests").append('<div class ="test" id="test-'+i+'"><p>'+test.name+'</p><div class="inner"><div class="loadbar w3-round-xlarge" id="barDiv" style="width: 70%"><div id="bar" class="loadbar w3-round-xlarge" style="width:0%;height: 20px"></div></div>&emsp;<p id="prog">0%</p>&emsp;<button type="button" id="play" class="button"><i class="fa fa-play" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="pause" class="button" disabled><i class="fa fa-pause" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="stop" class="button" disabled><i class="fa fa-stop" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button>&emsp;&emsp;<a id="edit" href="Create_Test_Page.html"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></a><i id="view" class="fa fa-eye" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></div>')
                 }
             }
-                    $(".tests").mCustomScrollbar({
-                    axis:"y",
-                    theme: "minimal",
-                    setHeight: "20%"
-                });
+            $(".tests").mCustomScrollbar({
+                axis:"y",
+                theme: "minimal",
+                setHeight: "20%"
+            });
         }
-        
-    
     });
     
     
