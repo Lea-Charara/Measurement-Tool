@@ -1,6 +1,19 @@
-
-function showdb(){
-    var responseid;
+function load() {
+    let params = new URLSearchParams(location.search);
+    testid = params.get('var');
+    $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/tests/gettest/",
+        data: JSON.stringify({id : testid}),
+        contentType: "application/json",
+        success: function(response){
+            console.log(response)
+            document.getElementById("TestNameField").value = response[0].name;
+            document.getElementById("DescriptionField").value = response[0].description;
+            document.getElementById("QueryNBField").value = parseInt(response[0].repetition);
+            document.getElementById("TimeoutField").value = parseInt(response[0].timeout);
+        }
+    });
     $.ajax({
         url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
     
@@ -30,8 +43,10 @@ function showdb(){
                 }
             }
 });
+    $.ajax({
+        
+    })
 }
-
 
 function checkName(){
     if(document.getElementById("TestNameField").value.length > 0){
