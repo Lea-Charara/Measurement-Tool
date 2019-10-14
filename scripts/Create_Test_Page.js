@@ -8,13 +8,12 @@ function showdb(){
         success: function( response ) {
             var databasetype = [];
                 for(i = 0;i < response.length;i++){
-                    console.log(response[i].dbtype_id);
-                    $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
+                    
+                    $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+' '+ response[i].name +'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
                     if(!databasetype.includes(response[i].dbtype_id)){
                         databasetype.push(response[i].dbtype_id);
                         var responseid = response[i];
                         var resname = "";
-                        $("#qr ul li:last").after('<input class="queries '+ responseid.dbtype_id+ ' '+ responseid.name+'" type="text" placeholder='+ resname+ +'><br />');
                         $.ajax({
                             async: false,
                             url:"https://measurementtoolbackend.herokuapp.com/types/getypename/",
@@ -70,7 +69,7 @@ function TextBoxAppear()
         if(index[i].checked){
             nbofchecked++;
             classname = $(index[i]).attr('class').split(' ')[1];
-            console.log(classname);
+            
             textboxestype.push(classname);
             document.getElementsByClassName("queries "+classname)[0].style.visibility = "visible";
          }
@@ -114,17 +113,17 @@ function checkQueries(){
     }
     if(nbofentered == nbofchecked){
         return true;
-        
+    }
     alert("please enter all the queries fields");
     return false;
 }
-}
+
 function checkAll(){
     if(checkName() && checkQueryNB() && checkTimeout() && checkQueries()) 
     {
         $.ajax({
             type: "POST",
-            url: "https://measurementtoolbackend.herokuapp.com/tests/addtest/",
+            url: "http://127.0.0.1:8000/tests/addtest/",
             // The key needs to match your method's input parameter (case-sensitive).
             data: JSON.stringify({ name: document.getElementById("TestNameField").value,
             description: document.getElementById("DescriptionField").value,
@@ -132,31 +131,60 @@ function checkAll(){
             timeout: document.getElementById("TimeoutField").value }),
             contentType: "application/json; charset=utf-8",
             success: function(){
-
+                var dic = {};
+                var checkedDB = document.getElementsByClassName("checkbox");
+                for(i =0 ;i <checkedDB.length;i++){
+                    if(checkedDB[i].checked){
+                        type = $(checkedDB[i]).attr('class').split(' ')[1];
+                        
+                        if(type in dic){
+                            dic[type][0]+=1;
+                            dic[type].push($(checkedDB[i]).attr('class').split(' ')[2]);
+                          
+                        }
+                        else{
+                            
+                            dic[type] = new Array();
+                            dic[type][0] = 1;
+                            dic[type].push($(checkedDB[i]).attr('class').split(' ')[2]);
+                        }
+                    }
+                }
                 var textboxes = document.getElementsByClassName("queries");
+               
                 for(i=0;i<textboxes.length;i++){
                     if(textboxes[i].style.visibility == "visible"){
+                        querytype = $(textboxes[i]).attr('class').split(' ')[1];
+                        
+                        for(j=0;j<dic[querytype][0];j++){
+                            
                         $.ajax({
+                            
                             type: "POST",
-                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/adddbtest/",
+                            url: "http://127.0.0.1:8000/dbtests/adddbtest/",
                             // The key needs to match your method's input parameter (case-sensitive).
                             data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
-                            dbid: $(textboxes[i]).attr('class').split(' ')[2], query : textboxes[i].value}),
+                            dbid: dic[querytype][j+1], query : textboxes[i].value}),
                             contentType: "application/json; charset=utf-8",
                             success: function(){
-                                var x = document.getElementById("snackbar");
-                                x.className = "show";
-                                setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+                                console.log("Hello");
+                                
                                         
                     }
-                });}
+                });
+            }
+            
+        }
                 
             }
                 
         }
             
             });
-        
+            var x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+
         
     }
 }
