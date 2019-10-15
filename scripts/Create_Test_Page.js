@@ -177,13 +177,17 @@ function checkAll(){
         }
                 
             }
-                
-        }
-            
-            });
             var x = document.getElementById("snackbar");
             x.className = "show";
             setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+                
+        }, 
+        error : function(){
+            alert("Test Name already taken!");
+        }
+            
+            });
+            
 
         
     }
