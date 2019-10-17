@@ -73,6 +73,7 @@ $(window).on("load",function(){
         success: function( response ) {
             $("#loading").hide();
             if(response.length == 0){
+                console.log(response.length)
                 $("#no_tests").show();
             }else{
                 $("#tests").show();
@@ -89,15 +90,10 @@ $(window).on("load",function(){
                 setHeight: "20%"
             });
         },        
-        statusCode: {
-            400: function(){
-                $("#no_tests").show();
-                $("#loading").hide();
-            }
-
-        },
-        error:
-            $("#loading > p").text('Could not connect to the server, please try again later.')
+        error:function(){
+        $("#no_tests").show();
+        $("#loading").hide()
+    }
         
     });
     

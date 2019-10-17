@@ -161,7 +161,7 @@ function checkAll(){
                         $.ajax({
                             
                             type: "POST",
-                            url: "https://measurementtoolbackend.herokuapp.com/adddbtest/",
+                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/adddbtest/",
                             // The key needs to match your method's input parameter (case-sensitive).
                             data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
                             dbid: dic[querytype][j+1], query : textboxes[i].value}),

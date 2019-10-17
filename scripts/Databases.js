@@ -28,15 +28,10 @@ $(window).on('load',function(){
                 });
             }
         },
-        statusCode: {
-            400: function(){
-                $("#no_DBs").show();
-                $("#loading").hide();
-            }
-
-        },
-        error:
-            $("#loading > p").text('Could not connect to the server, please try again later.')
+        error:function(){
+            $("#no_DBs").show();
+            $("#loading").hide();
+        }
     });
     
 });
