@@ -1,17 +1,18 @@
 $("#databases").on('click','#delete', function(){});
 
 $(window).on('load',function(){
+    $("#no_DBs").hide();
+    $("#databases").hide();
+    $("#newDB").hide();
     $.ajax({
         url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
     
         dataType: "json",
         success: function( response ) {
+            $("#loading").hide();
             if(response.length == 0){
                 $("#no_DBs").show();
-                $("#databases").hide();
-                $("#newDB").hide();
             }else{
-                $("#no_DBs").hide();
                 $("#databases").show();
                 $("#newDB").show();
                 for(i = 0;i < response.length;i++){
@@ -26,7 +27,8 @@ $(window).on('load',function(){
                     setHeight: "20%"
                 });
             }
-        }     
+        },
+        error: $("#loading > p").text('Could not connect to the server, please try again later.')
     });
     
 });
