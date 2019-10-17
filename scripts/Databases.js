@@ -28,7 +28,15 @@ $(window).on('load',function(){
                 });
             }
         },
-        error: $("#loading > p").text('Could not connect to the server, please try again later.')
+        statusCode: {
+            400: function(){
+                $("#no_DBs").show();
+                $("#loading").hide();
+            }
+
+        },
+        error:
+            $("#loading > p").text('Could not connect to the server, please try again later.')
     });
     
 });

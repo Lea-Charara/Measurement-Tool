@@ -88,8 +88,17 @@ $(window).on("load",function(){
                 theme: "minimal",
                 setHeight: "20%"
             });
+        },        
+        statusCode: {
+            400: function(){
+                $("#no_tests").show();
+                $("#loading").hide();
+            }
+
         },
-        error: $("#loading > p").text('Could not connect to the server, please try again later.')
+        error:
+            $("#loading > p").text('Could not connect to the server, please try again later.')
+        
     });
     
     
