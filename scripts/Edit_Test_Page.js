@@ -1,10 +1,10 @@
 function load() {
     let params = new URLSearchParams(location.search);
-    testid = params.get('var');
+    test_id = params.get('var');
     $.ajax({
         type: "POST",
         url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
-        data: JSON.stringify({id : testid}),
+        data: JSON.stringify({id : test_id}),
         contentType: "application/json",
         success: function(response){
             console.log(response)
@@ -22,7 +22,8 @@ function load() {
             var databasetype = [];
                 for(i = 0;i < response.length;i++){
                     
-                    $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+' '+ response[i].name +'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
+                    $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+' '+ response[i].name +
+                    ' '+ response[i].id+'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
                     if(!databasetype.includes(response[i].dbtype_id)){
                         databasetype.push(response[i].dbtype_id);
                         var responseid = response[i];
@@ -44,7 +45,16 @@ function load() {
             }
 });
     $.ajax({
-
+        url : "https://measurementtoolbackend.herokuapp.com/dbtests/getdbtests",
+        type : "POST",
+        data : JSON.stringify({testid : test_id}),
+        contentType: "application/json",
+        success: function(response){
+            for( i=0;i<response.length;i++){
+                document.getElementsByClassName(response[i].DB_id_id).checked = true;
+                
+            }
+        }
     })
 }
 
