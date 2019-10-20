@@ -1,4 +1,4 @@
-function load() {
+function on_load(){
     let params = new URLSearchParams(location.search);
     test_id = params.get('var');
     $.ajax({
@@ -7,7 +7,6 @@ function load() {
         data: JSON.stringify({id : test_id}),
         contentType: "application/json",
         success: function(response){
-            console.log(response)
             document.getElementById("TestNameField").value = response[0].name;
             document.getElementById("DescriptionField").value = response[0].description;
             document.getElementById("QueryNBField").value = parseInt(response[0].repetition);
@@ -16,14 +15,12 @@ function load() {
     });
     $.ajax({
         url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
-    
         dataType: "json",
         success: function( response ) {
             var databasetype = [];
                 for(i = 0;i < response.length;i++){
-                    
                     $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+' '+ response[i].name +
-                    ' '+ response[i].id+'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
+                    '" id = '+ response[i].id+' type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
                     if(!databasetype.includes(response[i].dbtype_id)){
                         databasetype.push(response[i].dbtype_id);
                         var responseid = response[i];
@@ -37,7 +34,7 @@ function load() {
                                 resname = res[responseid.dbtype_id-1].typename;
                             }
                         });
-                        $("#QueriesContainer").append('<input class="queries '+ response[i].dbtype_id+ ' '+ response[i].name+'" type="text" placeholder='+ resname +'><br />');
+                        $("#QueriesContainer").append('<input class="queries '+ response[i].dbtype_id+ ' '+ response[i].name+'" type="text" placeholder='+ resname +' value = ""><br />');
                         
                     }
 
@@ -45,17 +42,25 @@ function load() {
             }
 });
     $.ajax({
-        url : "https://measurementtoolbackend.herokuapp.com/dbtests/getdbtests",
+        url : "https://measurementtoolbackend.herokuapp.com/dbtests/getdbtests/",
         type : "POST",
         data : JSON.stringify({testid : test_id}),
         contentType: "application/json",
         success: function(response){
-            for( i=0;i<response.length;i++){
-                document.getElementsByClassName(response[i].DB_id_id).checked = true;
-                
+            var i;
+            for(i=0;i<response.length;i++){
+                temp = response[i].query
+                db = document.getElementById(response[i].DB_id_id)
+                db.checked = true;
+                type = $(db).attr('class').split(' ')[1];
+                TextBoxAppear()
+                console.log(document.getElementsByClassName("queries "+type))
+                document.getElementsByClassName("queries "+type)[0].value = temp;
             }
         }
-    })
+        
+    });
+    
 }
 
 function checkName(){

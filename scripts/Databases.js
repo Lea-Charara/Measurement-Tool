@@ -1,4 +1,4 @@
-$("#databases").on('click','#delete', function(){});
+
 
 $(window).on('load',function(){
     $("#no_DBs").hide();
