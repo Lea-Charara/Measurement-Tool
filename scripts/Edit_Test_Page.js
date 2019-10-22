@@ -54,7 +54,6 @@ function on_load(){
                 db.checked = true;
                 type = $(db).attr('class').split(' ')[1];
                 TextBoxAppear()
-                console.log(document.getElementsByClassName("queries "+type))
                 document.getElementsByClassName("queries "+type)[0].value = temp;
             }
         }
@@ -161,27 +160,27 @@ function checkAll(){
             success: function(response) {
                 req = '{"id": '+ test_id+','
                 if(document.getElementById("TestNameField").value != response[0].name){
-                    req += "name: "+ document.getElementById("TestNameField").value+","
+                    req += '"name": "'+ document.getElementById("TestNameField").value+'",'
                 }
                 if(document.getElementById("DescriptionField").value != response[0].description){
-                    req += "description: "+ document.getElementById("DescriptionField").value+","
+                    req += '"description": "'+ document.getElementById("DescriptionField").value+'",'
                 }
                 if(document.getElementById("QueryNBField").value != response[0].repetition){
                     req += '"repetition": '+ document.getElementById("QueryNBField").value+','
                 }
                 if(document.getElementById("TimeoutField").value != response[0].timeout){
-                    req += "timeout: "+ document.getElementById("TimeoutField").value+","
+                    req += '"timeout": '+ document.getElementById("TimeoutField").value+','
                 }
                 req = req.substr(0,req.length-1)
-                req += "}"
+                req += '}'
                 req = JSON.parse(req)
+                
                 $.ajax({
                     type: "POST",
                     url: "https://measurementtoolbackend.herokuapp.com/tests/updatetest/",
                     contentType: "application/json; charset=utf-8",
                     data : JSON.stringify(req),
                     success: function(){
-                        console.log("dalsk")
                         $.ajax({
                             type: "DELETE",
                             url: "https://measurementtoolbackend.herokuapp.com/dbtests/removedbtestid/",
