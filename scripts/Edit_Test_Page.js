@@ -3,7 +3,7 @@ function on_load(){
     test_id = params.get('var');
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8000/tests/gettest/",
+        url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
         data: JSON.stringify({id : test_id}),
         contentType: "application/json",
         success: function(response){
