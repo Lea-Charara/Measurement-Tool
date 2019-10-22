@@ -28,19 +28,18 @@ class AddDatabaseView(APIView):
 
 class RemoveDatabaseView(APIView):
     def delete(self, request):
-       
-            if "name" in request.data:
-                if Database.objects.filter(name=request.data["name"]).exists():
-                    Database.objects.filter(name=request.data["name"]).delete()
-                    return Response(status = status.HTTP_200_OK)
+        if "id" in request.data:
+            if Database.objects.filter(pk=request.data["id"]).exists():
+                Database.objects.filter(pk=request.data["id"]).delete()
+                return Response(status = status.HTTP_200_OK)
             return Response(status = status.HTTP_400_BAD_REQUEST)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
 
 class GetAllDataBasesView(APIView):
 
     def get(self, request):
+        dbs = Database.objects.all().values()
+        dbs_list = list(dbs)
+        return JsonResponse(dbs_list,safe = False)
        
-            if len(Database.objects.all()) > 0:
-                dbs = Database.objects.all().values()
-                dbs_list = list(dbs)
-                return JsonResponse(dbs_list,safe = False)
-            return Response(status = status.HTTP_400_BAD_REQUEST)
+        

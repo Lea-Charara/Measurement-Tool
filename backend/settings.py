@@ -27,7 +27,7 @@ SECRET_KEY = 's!c@54nhjg7aqyd3o!@_=x#g^ayqix6#72w8@byqc*qds24$38'
 # DEBUG = True
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['https://measurementtoolbackend.herokuapp.com/','127.0.0.1', '*']
+ALLOWED_HOSTS = ['measurementtoolbackend.herokuapp.com','127.0.0.1']
 
 CORS_ORIGIN_ALLOW_ALL=True
 # Application definition

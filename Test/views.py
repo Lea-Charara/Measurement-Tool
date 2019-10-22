@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Test
 from django.http import *
-
+import json
 
 # Create your views here.
 class AddTestView(APIView):
@@ -34,11 +34,29 @@ class RemoveTestView(APIView):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 class GetAllTestsView(APIView):
-
     def get(self, request):
+        tests = Test.objects.all().values()
+        tests_list = list(tests)
+        return JsonResponse(tests_list, safe=False)
         
-            if len(Test.objects.all()) > 0:
-                tests = Test.objects.all().values()
-                tests_list = list(tests)
-                return JsonResponse(tests_list, safe=False)
-            return Response(status = status.HTTP_400_BAD_REQUEST)
+class GetTestView(APIView):
+    def post(self, request):
+        if "id" in request.data:
+            return JsonResponse(list(Test.objects.filter(id=request.data["id"]).values()),safe = False)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+
+class UpdateTestView(APIView):
+    def post(self,request):
+        print(type(request.data))
+        if "id" in request.data:
+            test = Test.objects.filter(id=request.data["id"])
+            if "name" in request.data:
+                test.update(name = request.data["name"])
+            if "description" in request.data:
+                test.update(description = request.data["description"])
+            if "repetition" in request.data:
+                test.update(repetition = request.data["repetition"])
+            if "timeout" in request.data:
+                test.update(timeout = request.data["timeout"])
+            return Response(status = status.HTTP_200_OK)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
