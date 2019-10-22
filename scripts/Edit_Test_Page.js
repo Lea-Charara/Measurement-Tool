@@ -3,7 +3,7 @@ function on_load(){
     test_id = params.get('var');
     $.ajax({
         type: "POST",
-        url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
+        url: "http://127.0.0.1:8000/tests/gettest/",
         data: JSON.stringify({id : test_id}),
         contentType: "application/json",
         success: function(response){
@@ -151,69 +151,104 @@ function checkQueries(){
 function checkAll(){
     if(checkName() && checkQueryNB() && checkTimeout() && checkQueries()) 
     {
+        let params = new URLSearchParams(location.search);
+        test_id = params.get('var');
         $.ajax({
             type: "POST",
-            url: "https://measurementtoolbackend.herokuapp.com/tests/addtest/",
-            // The key needs to match your method's input parameter (case-sensitive).
-            data: JSON.stringify({ name: document.getElementById("TestNameField").value,
-            description: document.getElementById("DescriptionField").value,
-            repetition: document.getElementById("QueryNBField").value,
-            timeout: document.getElementById("TimeoutField").value }),
+            url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
+            data : JSON.stringify({"id" : test_id}),
             contentType: "application/json; charset=utf-8",
-            success: function(){
-                var dic = {};
-                var checkedDB = document.getElementsByClassName("checkbox");
-                for(i =0 ;i <checkedDB.length;i++){
-                    if(checkedDB[i].checked){
-                        type = $(checkedDB[i]).attr('class').split(' ')[1];
-                        
-                        if(type in dic){
-                            dic[type][0]+=1;
-                            dic[type].push($(checkedDB[i]).attr('class').split(' ')[2]);
-                          
-                        }
-                        else{
-                            
-                            dic[type] = new Array();
-                            dic[type][0] = 1;
-                            dic[type].push($(checkedDB[i]).attr('class').split(' ')[2]);
-                        }
-                    }
+            success: function(response) {
+                req = '{"id": '+ test_id+','
+                if(document.getElementById("TestNameField").value != response[0].name){
+                    req += "name: "+ document.getElementById("TestNameField").value+","
                 }
-                var textboxes = document.getElementsByClassName("queries");
-               
-                for(i=0;i<textboxes.length;i++){
-                    if(textboxes[i].style.visibility == "visible"){
-                        querytype = $(textboxes[i]).attr('class').split(' ')[1];
-                        
-                        for(j=0;j<dic[querytype][0];j++){
-                            
+                if(document.getElementById("DescriptionField").value != response[0].description){
+                    req += "description: "+ document.getElementById("DescriptionField").value+","
+                }
+                if(document.getElementById("QueryNBField").value != response[0].repetition){
+                    req += '"repetition": '+ document.getElementById("QueryNBField").value+','
+                }
+                if(document.getElementById("TimeoutField").value != response[0].timeout){
+                    req += "timeout: "+ document.getElementById("TimeoutField").value+","
+                }
+                req = req.substr(0,req.length-1)
+                req += "}"
+                req = JSON.parse(req)
+                $.ajax({
+                    type: "POST",
+                    url: "https://measurementtoolbackend.herokuapp.com/tests/updatetest/",
+                    contentType: "application/json; charset=utf-8",
+                    data : JSON.stringify(req),
+                    success: function(){
+                        console.log("dalsk")
                         $.ajax({
-                            
-                            type: "POST",
-                            url: "https://measurementtoolbackend.herokuapp.com/adddbtest/",
-                            // The key needs to match your method's input parameter (case-sensitive).
-                            data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
-                            dbid: dic[querytype][j+1], query : textboxes[i].value}),
+                            type: "DELETE",
+                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/removedbtestid/",
                             contentType: "application/json; charset=utf-8",
+                            data : JSON.stringify({"testid":test_id}),
                             success: function(){
-                                console.log("Hello");
-                                
+                               
+                                var dic = {};
+                                var checkedDB = document.getElementsByClassName("checkbox");
+                                var i;
+                                for(i =0 ;i <checkedDB.length;i++){
+                                    if(checkedDB[i].checked){
+                                        type = $(checkedDB[i]).attr('class').split(' ')[1];
                                         
+                                        if(type in dic){
+                                            dic[type][0]+=1;
+                                            dic[type].push($(checkedDB[i]).attr('class').split(' ')[2]);
+                                          
+                                        }
+                                        else{
+                                            
+                                            dic[type] = new Array();
+                                            dic[type][0] = 1;
+                                            dic[type].push($(checkedDB[i]).attr('class').split(' ')[2]);
+                                        }
+                                    }
+                                }
+                                var textboxes = document.getElementsByClassName("queries");
+                               
+                                for(i=0;i<textboxes.length;i++){
+                                    if(textboxes[i].style.visibility == "visible"){
+                                        querytype = $(textboxes[i]).attr('class').split(' ')[1];
+                                        
+                                        for(j=0;j<dic[querytype][0];j++){
+                                            
+                                        $.ajax({
+                                            
+                                            type: "POST",
+                                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/adddbtest/",
+                                            // The key needs to match your method's input parameter (case-sensitive).
+                                            data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
+                                            dbid: dic[querytype][j+1], query : textboxes[i].value}),
+                                            contentType: "application/json; charset=utf-8",
+                                            success: function(){
+                                                console.log("Done");
+                                                var x = document.getElementById("snackbar");
+                                                x.className = "show";
+                                                setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+                                                                                    
+                                                        
+                                    }
+                                });
+                            }
+                            
+                        }
+                                
+                            }
+                            }
+                        });
                     }
                 });
-            }
-            
-        }
-                
-            }
+             
                 
         }
             
             });
-            var x = document.getElementById("snackbar");
-            x.className = "show";
-            setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
+            
 
         
     }
