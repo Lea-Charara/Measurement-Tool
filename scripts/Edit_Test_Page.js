@@ -11,6 +11,7 @@ function on_load(){
             document.getElementById("DescriptionField").value = response[0].description;
             document.getElementById("QueryNBField").value = parseInt(response[0].repetition);
             document.getElementById("TimeoutField").value = parseInt(response[0].timeout);
+            
         }
     });
     $.ajax({

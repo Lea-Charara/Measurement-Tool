@@ -7,11 +7,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <link rel="stylesheet" type="text/css" href="../styles/Create_Test_Page.css">
         <link rel="stylesheet" href="./Style.css">
-        <script src="../scripts/Create_Database_Page.js"></script>
+        <script src="../scripts/Edit_Database_Page.js"></script>
         <title>Define Database</title>
         
     </head>
-    <body>
+    <body onload="onload()">
             <div class="Header">
                 <button class = "btn btn-danger custom cancel" onClick = "document.location = 'Databases.html'">CANCEL</button>
                 <h3 class = "title">EDIT DATABASE</h3>
@@ -46,19 +46,19 @@
                       <label for="ChooseDataBase">Choose Database</label>  
                       <br>
                       <label class="radio-inline">
-                        <input class ="radio" type="radio" name="optradio" checked id="Cassandra" value = "Cassandra"> Cassandra
+                        <input class ="radio" type="radio" name="optradio" checked id="1" value = "Cassandra"> Cassandra
                       </label>
                       <label class="radio-inline">
-                        <input class ="radio" type="radio" name="optradio" id="Neo4j" value="Neo4j"> Neo4j
+                        <input class ="radio" type="radio" name="optradio" id="4" value="Neo4j"> Neo4j
                       </label>
                       <label class="radio-inline">
-                        <input class ="radio" type="radio" name="optradio" id="OrientDB" value="OrientDB"> OrientDB
+                        <input class ="radio" type="radio" name="optradio" id="2" value="OrientDB"> OrientDB
                       </label>
                       <label class="radio-inline">
-                        <input class ="radio" type="radio" name="optradio" id="Postgresql" value="Postgresql"> Postgresql
+                        <input class ="radio" type="radio" name="optradio" id="3" value="Postgresql"> Postgresql
                       </label>
                     </form>
                   </div>
-                  <div id="snackbar">Database Successfully Created</div>
+                  <div id="snackbar">Database Successfully Updated</div>
     </body>
 </html>
