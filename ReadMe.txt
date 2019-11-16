@@ -14,3 +14,5 @@ cd Measurement-Tool
 python3 manage.py runserver
 
 To open the server you do : 127.0.0.1/admin
+
+When you finish with testing push to the backend-dev branch it will automatically update the heroku server.
