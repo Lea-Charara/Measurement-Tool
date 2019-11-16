@@ -18,36 +18,37 @@ class AddDatabaseView(APIView):
     def post(self, request):
             connection = False
             if "name" in request.data and "user" in request.data and "dbtype" in request.data and "password" in request.data and "host" in request.data and "port" in request.data:
-                #test connection 
                if request.data["dbtype"] == "OrientDB":
                 try:
                     client = pyorient.OrientDB(request.data["host"], int(request.data["port"])) 
                     session_id = client.connect(request.data["user"],request.data["password"])
                     connection = True
-                except :
+                    
+                except:
                     return Response(status = status.HTTP_400_BAD_REQUEST)
                elif request.data["dbtype"] == "Cassandra":
                 try:
-                    cluster = Cluster([request.data["host"]],port=int(request.data["port"])
-                    session = cluster.connect()                    
+                    cluster = Cluster([request.data["host"]],port=int(request.data["port"]))
+                    session = cluster.connect()                 
                     cluster.shutdown()
                     connection = True
-                except :
-                    return Response(status = status.HTTP_400_BAD_REQUEST)     
-               elif request.data["dbtype"] == "Postgresql":
-                try:
-                    conn = psycopg2.connect(database=request.data["name"], user=request.data["user"], password=request.data["password"], host=request.data["host"], port=request.data["port"])
-                    connection = True
-                    conn.close()
-                except :
+                except:
                     return Response(status = status.HTTP_400_BAD_REQUEST)
+               elif request.data["dbtype"] == "Postgresql":
+                    try:
+                         conn = psycopg2.connect(database=request.data["name"], user=request.data["user"], password=request.data["password"], host=request.data["host"], port=request.data["port"])
+                         connection = True
+                         conn.close()
+                    except:
+                        return Response(status = status.HTTP_400_BAD_REQUEST)
+            
                 
-                if (connection == True):
+               if (connection == True):
                     db = Database()
                     db.name = request.data["name"]
                     db.host = request.data["host"]
                     db.port = request.data["port"]
-                    db.user = request.data["user"]
+                    db.username = request.data["user"]
                     db.password = request.data["password"]
                     dbtype = Type.objects.filter(typename=request.data["dbtype"]).first()
                     db.dbtype = dbtype
