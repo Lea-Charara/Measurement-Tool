@@ -47,7 +47,6 @@ class GetTestView(APIView):
 
 class UpdateTestView(APIView):
     def post(self,request):
-        print(type(request.data))
         if "id" in request.data:
             test = Test.objects.filter(id=request.data["id"])
             if "name" in request.data:
@@ -59,4 +58,13 @@ class UpdateTestView(APIView):
             if "timeout" in request.data:
                 test.update(timeout = request.data["timeout"])
             return Response(status = status.HTTP_200_OK)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+
+class RemoveTestView(APIView):
+    def delete(self, request):
+        if "id" in request.data:
+            if Test.objects.filter(pk=request.data["id"]).exists():
+                Test.objects.filter(pk=request.data["id"]).delete()
+                return Response(status = status.HTTP_200_OK)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_400_BAD_REQUEST)

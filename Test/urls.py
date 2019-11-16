@@ -7,4 +7,5 @@ urlpatterns = [
     path('gettests/', GetAllTestsView.as_view()),
     path('gettest/', GetTestView.as_view()),
     path('updatetest/', UpdateTestView.as_view()),
+    path('removetest/', RemoveTestView.as_view())
 ]
