@@ -7,6 +7,7 @@ from Type.models import Type
 from django.http import JsonResponse
 from DatabaseTest.models import DatabaseTest
 import pyorient
+import psycopg2
 
 
 # Create your views here.
@@ -20,6 +21,12 @@ class AddDatabaseView(APIView):
                 try:
                     client = pyorient.OrientDB(request.data["host"], int(request.data["port"])) 
                     session_id = client.connect(request.data["user"],request.data["password"])
+                    connection = True
+                except :
+                    return Response(status = status.HTTP_400_BAD_REQUEST)
+               elif request.data["dbtype"] == "Postgresql":
+                try:
+                    conn = psycopg2.connect(database=request.data["name"], user=request.data["user"], password=request.data["password"], host=request.data["host"], port=request.data["port"])
                     connection = True
                 except :
                     return Response(status = status.HTTP_400_BAD_REQUEST)
