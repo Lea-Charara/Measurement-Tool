@@ -6,8 +6,10 @@ from .models import Database
 from Type.models import Type
 from django.http import JsonResponse
 from DatabaseTest.models import DatabaseTest
+# Database Drivers
 import pyorient
 import psycopg2
+from cassandra.cluster import Cluster
 
 
 # Create your views here.
@@ -16,7 +18,7 @@ class AddDatabaseView(APIView):
     def post(self, request):
             connection = False
             if "name" in request.data and "user" in request.data and "dbtype" in request.data and "password" in request.data and "host" in request.data and "port" in request.data:
-                #test connection
+                #test connection 
                if request.data["dbtype"] == "OrientDB":
                 try:
                     client = pyorient.OrientDB(request.data["host"], int(request.data["port"])) 
@@ -24,10 +26,19 @@ class AddDatabaseView(APIView):
                     connection = True
                 except :
                     return Response(status = status.HTTP_400_BAD_REQUEST)
+               elif request.data["dbtype"] == "Cassandra":
+                try:
+                    cluster = Cluster([request.data["host"]],port=int(request.data["port"])
+                    session = cluster.connect()                    
+                    cluster.shutdown()
+                    connection = True
+                except :
+                    return Response(status = status.HTTP_400_BAD_REQUEST)     
                elif request.data["dbtype"] == "Postgresql":
                 try:
                     conn = psycopg2.connect(database=request.data["name"], user=request.data["user"], password=request.data["password"], host=request.data["host"], port=request.data["port"])
                     connection = True
+                    conn.close()
                 except :
                     return Response(status = status.HTTP_400_BAD_REQUEST)
                 
