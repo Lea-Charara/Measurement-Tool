@@ -68,3 +68,6 @@ class RemoveTestView(APIView):
                 return Response(status = status.HTTP_200_OK)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+    #We are going to create here the run tests
