@@ -17,10 +17,12 @@ class AddDatabaseView(APIView):
             if "name" in request.data and "user" in request.data and "dbtype" in request.data and "password" in request.data and "host" in request.data and "port" in request.data:
                 #test connection
                if request.data["dbtype"] == "OrientDB":
-                client = pyorient.OrientDB(request.data["host"], int(request.data["port"])) 
-                session_id = client.connect( request.data["user"],request.data["password"])
-                connection = True
-
+                try:
+                    client = pyorient.OrientDB(request.data["host"], int(request.data["port"])) 
+                    session_id = client.connect(request.data["user"],request.data["password"])
+                except :
+                    return Response(status = status.HTTP_400_BAD_REQUEST)
+                
                 if (connection == True):
                     db = Database()
                     db.name = request.data["name"]
