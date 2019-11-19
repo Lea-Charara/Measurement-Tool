@@ -10,6 +10,7 @@ from DatabaseTest.models import DatabaseTest
 import pyorient
 import psycopg2
 from cassandra.cluster import Cluster
+from neo4j import GraphDatabase
 
 
 # Create your views here.
@@ -41,8 +42,13 @@ class AddDatabaseView(APIView):
                          conn.close()
                     except:
                         return Response(status = status.HTTP_400_BAD_REQUEST)
-            
-                
+               elif request.data["dbtype"] == "neo4j":
+                    try:
+                        driver = GraphDatabase.driver(uri="bolt://"+request.data["host"] +":"+request.data["port"], auth=(request.data["user"], request.data["password"]))
+                        connection = True
+                    except :
+                        return Response(status = status.HTTP_400_BAD_REQUEST)
+                    
                if (connection == True):
                     db = Database()
                     db.name = request.data["name"]
