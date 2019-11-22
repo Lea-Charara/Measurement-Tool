@@ -20,25 +20,20 @@ function myFunction() {
  }
     function CheckFields(){
     
-    var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     var pass = document.getElementById("myInput");
     var username = document.getElementById("InputUser");
     var port = document.getElementById("InputPort");
     var host = document.getElementById("InputHost");
     var name = document.getElementById("InputName");
     var IpAddr=host.value;
-   if (pass.value.length == 0 || username.value.length == 0 || name.value.length == 0)
-   {
-         alert("Not all fields have been entered")
-         
-   }
-   else if(isNaN(port.value)) 
+   
+   if(isNaN(port.value)) 
    {
          alert("Port Field is not a valid number")
    }
-   else if(!IpAddr.match(ipformat))
+   else if(IpAddr.value.length == 0)
    {
-        alert("Host is not a valid IP Address")
+        alert("Host Cannot Be Blank.")
    }
    else
    {
