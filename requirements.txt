@@ -13,3 +13,4 @@ whitenoise==4.1.4
 cython==0.29.14
 cassandra-driver==3.20.1
 six==1.13.0
+neo4j==1.7.6
