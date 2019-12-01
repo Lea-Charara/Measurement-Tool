@@ -121,7 +121,28 @@ class BeginTestView(APIView):
                             test.save()
                         return Response(status = status.HTTP_200_OK)
                 elif((str(dbtype)) == "Neo4j"):
-                    return
+                 driver = GraphDatabase.driver(uri="bolt://"+str(db.host) +":"+int(db.port), auth=(str(db.username), str(db.password))
+                            start = time.time()
+                             for i in range(test.repetition):
+                                 test = Test.objects.filter(id=request.data["id"])[0]
+                                    print(test.AbleToRun)
+                                    if(test.AbleToRun):
+                                        timeout = int(test.timeout)*1000
+                                        temp = driver.query(dbtest.query +" dbms.transaction.timeout= "+str(timeout))
+                                        dbtest.Nb_of_done +=1
+                                        dbtest.save()
+                                    else :
+                                        print(test.Nb_of_done)
+                                        print("stop")
+                                        break
+                                end = time.time()
+                                print(end - start)
+                                dbtest.Test_Duration = end - start
+                                dbtest.save()
+                                if(test.AbleToRun):
+                                    test.Nb_of_done +=1
+                                    test.save()
+                return
                 elif((str(dbtype)) == "Postgres"):
                     return
         return Response(status = status.HTTP_400_BAD_REQUEST)
