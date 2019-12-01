@@ -132,7 +132,7 @@ class BeginTestView(APIView):
                             print(test.AbleToRun)
                             if(test.AbleToRun):
                                 cursor = connections.cursor()
-                                cursor.execute(dbtest.query)
+                                temp = cursor.execute(dbtest.query)
                                 cursor.close()
                                 dbtest.Progress +=1
                                 dbtest.save()
@@ -201,7 +201,7 @@ class ContinueTestView(APIView):
                             test = Test.objects.filter(id=request.data["id"])[0]
                             if(test.AbleToRun):
                                 cursor =connections.cursor()
-                                cursor.execute(dbtest.query)
+                                temp = cursor.execute(dbtest.query)
                                 cursor.close()
                                 dbtest.Progress +=1
                                 dbtest.save()
