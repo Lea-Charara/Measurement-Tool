@@ -34,3 +34,4 @@ prompt_toolkit==2.0.10
 pygments==2.3.1
 pytz==2019.3
 urllib3<1.25,>==1.24.3
+six==1.12.0
