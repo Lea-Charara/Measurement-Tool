@@ -122,9 +122,9 @@ class BeginTestView(APIView):
                             test.save()
                         return Response(status = status.HTTP_200_OK)
                 elif((str(dbtype)) == "Neo4j"):
-                 driver = GraphDatabase.driver(uri="bolt://"+str(db.host) +":"+int(db.port), auth=(str(db.username), str(db.password))
+                 driver = GraphDatabase.driver(uri="bolt://"+str(db.host) +":"+int(db.port), auth=(str(db.username), str(db.password)))
                  start = time.time()
-                     for i in range(test.repetition):
+                      for i in range(test.repetition):
                          test = Test.objects.filter(id=request.data["id"])[0]
                         print(test.AbleToRun)
                             if(test.AbleToRun):
@@ -295,3 +295,4 @@ class AbleToRun(APIView):
                 print(temp.AbleToRun)
                 return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
+
