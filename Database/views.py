@@ -42,7 +42,7 @@ class AddDatabaseView(APIView):
                          conn.close()
                     except:
                         return Response(status = status.HTTP_400_BAD_REQUEST)
-               elif request.data["dbtype"] == "neo4j":
+               elif request.data["dbtype"] == "Neo4j":
                     try:
                         driver = GraphDatabase.driver(uri="bolt://"+request.data["host"] +":"+request.data["port"], auth=(request.data["user"], request.data["password"]))
                         connection = True
