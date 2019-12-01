@@ -10,6 +10,7 @@ from Type.models import Type
 import json
 import pyorient
 import time
+import psycopg2
 
 # Create your views here.
 class AddTestView(APIView):
@@ -82,7 +83,7 @@ class BeginTestView(APIView):
         if "id" in request.data:
             
             test = Test.objects.filter(id=request.data["id"])[0]
-            test.Nb_of_done = 0
+            test.Progress = 0
             if(not(test.AbleToRun)):
                 test.AbleToRun = True
             test.save()
@@ -90,7 +91,7 @@ class BeginTestView(APIView):
             for dbtest in tests:
                 db = Database.objects.filter(id=dbtest.DB_id_id)[0]
                 dbtype = Type.objects.filter(typename=db.dbtype).first()
-                dbtest.Nb_of_done = 0
+                dbtest.Progress = 0
                 if((str(dbtype)) == "Cassandra"):
                     return
                 
@@ -106,10 +107,10 @@ class BeginTestView(APIView):
                             if(test.AbleToRun):
                                 timeout = int(test.timeout)*1000
                                 temp = client.query(dbtest.query +" TIMEOUT "+str(timeout))
-                                dbtest.Nb_of_done +=1
+                                dbtest.Progress +=1
                                 dbtest.save()
                             else :
-                                print(test.Nb_of_done)
+                                print(test.Progress)
                                 print("stop")
                                 break
                         end = time.time()
@@ -117,7 +118,7 @@ class BeginTestView(APIView):
                         dbtest.Test_Duration = end - start
                         dbtest.save()
                         if(test.AbleToRun):
-                            test.Nb_of_done +=1
+                            test.Progress +=1
                             test.save()
                         return Response(status = status.HTTP_200_OK)
                 elif((str(dbtype)) == "Neo4j"):
@@ -144,7 +145,31 @@ class BeginTestView(APIView):
                                     test.save()
                 return
                 elif((str(dbtype)) == "Postgres"):
-                    return
+                    if(test.AbleToRun):
+                        connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
+                        start = time.time()
+                        for i in range(test.repetition):
+                            test = Test.objects.filter(id=request.data["id"])[0]
+                            print(test.AbleToRun)
+                            if(test.AbleToRun):
+                                cursor = connections.cursor()
+                                temp = cursor.execute(dbtest.query)
+                                cursor.close()
+                                dbtest.Progress +=1
+                                dbtest.save()
+                            else :
+                                print(test.Progress)
+                                print("stop")
+                                break
+                        end = time.time()
+                        print(end - start)
+                        dbtest.Test_Duration = end - start
+                        dbtest.save()
+                        if(test.AbleToRun):
+                            test.Progress+=1
+                            test.save()
+                        connections.close()
+                        return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
 class ContinueTestView(APIView):
@@ -167,13 +192,13 @@ class ContinueTestView(APIView):
                         client = pyorient.OrientDB(str(db.host), int(db.port))
                         client.db_open(str(db.name), str(db.username), str(db.password))
                         start = time.time()
-                        i = db.Nb_of_done
+                        i = db.Progress
                         for i in range(test.AbleToRun):
                             test = Test.objects.filter(id=request.data["id"])[0]
                             if(test.AbleToRun):
                                 timeout = int(test.timeout)*1000
                                 temp = client.query(dbtest.query)
-                                dbtest.Nb_of_done +=1
+                                dbtest.Progress +=1
                                 dbtest.save()
                             else:
                                 break
@@ -181,7 +206,7 @@ class ContinueTestView(APIView):
                         dbtest.Test_Duration += end - start
                         dbtest.save()
                         if(test.AbleToRun):
-                            test.Nb_of_done +=1
+                            test.Progress +=1
                             test.save()
                         return Response(status = status.HTTP_200_OK)
                 
@@ -189,7 +214,27 @@ class ContinueTestView(APIView):
                     return
                 
                 elif((str(dbtype)) == "Postgres"):
-                    return
+                    if(test.AbleToRun):
+                        connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
+                        start = time.time()
+                        i = db.Progress
+                        for i in range(test.AbleToRun):
+                            test = Test.objects.filter(id=request.data["id"])[0]
+                            if(test.AbleToRun):
+                                cursor =connections.cursor()
+                                temp = cursor.execute(dbtest.query)
+                                cursor.close()
+                                dbtest.Progress +=1
+                                dbtest.save()
+                            else:
+                                break
+                        end = time.time()
+                        dbtest.Test_Duration += end - start
+                        dbtest.save()
+                        if(test.AbleToRun):
+                            test.Progress +=1
+                            test.save()
+                        return Response(status = status.HTTP_200_ok)
         
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -198,12 +243,12 @@ class StopTest(APIView):
     def post(self, request):
         if "id" in request.data:
             test = Test.objects.filter(id=request.data["id"])[0]
-            test.Nb_of_done = 0
+            test.Progress = 0
             test.AbleToRun = False
             test.save()
             tests = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
             for dbtest in tests:
-                dbtest.Nb_of_done = 0
+                dbtest.Progress = 0
                 dbtest.Test_Duration = 0
                 dbtest.save()
             return Response(status = status.HTTP_200_OK)
@@ -215,7 +260,7 @@ class GetNbOfDoneView(APIView):
         if "id" in request.data:
             if Test.objects.filter(id=request.data["id"]).exists():
                 nboftest = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
-                pdone = (int(Test.objects.filter(id=request.data["id"])[0].Nb_of_done)/len(nboftest))*100
+                pdone = (int(Test.objects.filter(id=request.data["id"])[0].Progress)/len(nboftest))*100
                 return JsonResponse(pdone,safe= False)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_400_BAD_REQUEST)
