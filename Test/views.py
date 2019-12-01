@@ -131,7 +131,7 @@ class BeginTestView(APIView):
                             test = Test.objects.filter(id=request.data["id"])[0]
                             print(test.AbleToRun)
                             if(test.AbleToRun):
-                                cursor = connection.cursor()
+                                cursor = connections.cursor()
                                 cursor.execute(dbtest.query)
                                 cursor.close()
                                 dbtest.Progress +=1
@@ -147,6 +147,7 @@ class BeginTestView(APIView):
                         if(test.AbleToRun):
                             test.Progress+=1
                             test.save()
+                        connections.close()
                         return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -192,7 +193,27 @@ class ContinueTestView(APIView):
                     return
                 
                 elif((str(dbtype)) == "Postgres"):
-                    return
+                    if(test.AbleToRun):
+                        connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
+                        start = time.time()
+                        i = db.Progress
+                        for i in range(test.AbleToRun):
+                            test = Test.objects.filter(id=request.data["id"])[0]
+                            if(test.AbleToRun):
+                                cursor =connections.cursor()
+                                cursor.execute(dbtest.query)
+                                cursor.close()
+                                dbtest.Progress +=1
+                                dbtest.save()
+                            else:
+                                break
+                        end = time.time()
+                        dbtest.Test_Duration += end - start
+                        dbtest.save()
+                        if(test.AbleToRun):
+                            test.Progress +=1
+                            test.save()
+                        return Response(status = status.HTTP_200_ok)
         
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
