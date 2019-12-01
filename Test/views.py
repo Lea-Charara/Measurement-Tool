@@ -10,6 +10,7 @@ from Type.models import Type
 import json
 import pyorient
 import time
+import psycopg2
 
 # Create your views here.
 class AddTestView(APIView):
@@ -123,7 +124,30 @@ class BeginTestView(APIView):
                 elif((str(dbtype)) == "Neo4j"):
                     return
                 elif((str(dbtype)) == "Postgres"):
-                    return
+                    if(test.AbleToRun):
+                        connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
+                        start = time.time()
+                        for i in range(test.repetition):
+                            test = Test.objects.filter(id=request.data["id"])[0]
+                            print(test.AbleToRun)
+                            if(test.AbleToRun):
+                                cursor = connection.cursor()
+                                cursor.execute(dbtest.query)
+                                cursor.close()
+                                dbtest.Progress +=1
+                                dbtest.save()
+                            else :
+                                print(test.Progress)
+                                print("stop")
+                                break
+                        end = time.time()
+                        print(end - start)
+                        dbtest.Test_Duration = end - start
+                        dbtest.save()
+                        if(test.AbleToRun):
+                            test.Progress+=1
+                            test.save()
+                        return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
 class ContinueTestView(APIView):
