@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Test
 from django.http import *
+from django.db.models import Sum
 from DatabaseTest.models import DatabaseTest
 from Database.models import Database
 from Type.models import Type
@@ -117,33 +118,30 @@ class BeginTestView(APIView):
                         print(end - start)
                         dbtest.Test_Duration = end - start
                         dbtest.save()
-                        if(test.AbleToRun):
-                            test.Progress +=1
-                            test.save()
+                        client.db_close()                        
                         return Response(status = status.HTTP_200_OK)
                 elif((str(dbtype)) == "Neo4j"):
-                    driver = GraphDatabase.driver(uri="bolt://"+str(db.host) +":"+int(db.port), auth=(str(db.username), str(db.password)))
-                    start = time.time()
-                    for i in range(test.repetition):
-                        test = Test.objects.filter(id=request.data["id"])[0]
-                        print(test.AbleToRun)
-                        if(test.AbleToRun):
-                            timeout = int(test.timeout)*1000
-                            temp = driver.query(dbtest.query +" dbms.transaction.timeout= "+str(timeout))
-                            dbtest.Nb_of_done +=1
-                            dbtest.save()
-                        else :
-                            print(test.Nb_of_done)
-                            print("stop")
-                            break
-                    end = time.time()
-                    print(end - start)
-                    dbtest.Test_Duration = end - start
-                    dbtest.save()   
                     if(test.AbleToRun):
-                        test.Nb_of_done +=1
-                        test.save()
-                
+                        driver = GraphDatabase.driver(uri="bolt://"+str(db.host) +":"+int(db.port), auth=(str(db.username), str(db.password)))
+                        start = time.time()
+                        for i in range(test.repetition):
+                            test = Test.objects.filter(id=request.data["id"])[0]
+                            print(test.AbleToRun)
+                            if(test.AbleToRun):
+                                timeout = int(test.timeout)*1000
+                                temp = driver.query(dbtest.query +" dbms.transaction.timeout= "+str(timeout))
+                                dbtest.Nb_of_done +=1
+                                dbtest.save()
+                            else :
+                                print(test.Nb_of_done)
+                                print("stop")
+                                break
+                        end = time.time()
+                        print(end - start)
+                        dbtest.Test_Duration = end - start
+                        dbtest.save()
+                        driver.close()
+                        return Response(status = status.HTTP_200_OK)
                 elif((str(dbtype)) == "Postgres"):
                     if(test.AbleToRun):
                         connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
@@ -165,9 +163,6 @@ class BeginTestView(APIView):
                         print(end - start)
                         dbtest.Test_Duration = end - start
                         dbtest.save()
-                        if(test.AbleToRun):
-                            test.Progress+=1
-                            test.save()
                         connections.close()
                         return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -192,53 +187,51 @@ class ContinueTestView(APIView):
                         client = pyorient.OrientDB(str(db.host), int(db.port))
                         client.db_open(str(db.name), str(db.username), str(db.password))
                         start = time.time()
-                        i = db.Progress
-                        for i in range(test.AbleToRun):
+                        i = dbtest.Progress
+                        #for i in range(test.AbleToRun):
+                        while i < test.repetition:
                             test = Test.objects.filter(id=request.data["id"])[0]
                             if(test.AbleToRun):
                                 timeout = int(test.timeout)*1000
                                 temp = client.query(dbtest.query)
                                 dbtest.Progress +=1
                                 dbtest.save()
+                                i += 1
                             else:
                                 break
                         end = time.time()
                         dbtest.Test_Duration += end - start
                         dbtest.save()
-                        if(test.AbleToRun):
-                            test.Progress +=1
-                            test.save()
+                        client.db_close()
                         return Response(status = status.HTTP_200_OK)
                 
                 elif((str(dbtype)) == "Neo4j"):
                     if(test.AbleToRun):
                         driver = GraphDatabase.driver(uri="bolt://"+str(db.host) +":"+int(db.port), auth=(str(db.username), str(db.password)))
                         start = time.time()
-                        i = db.Progress
-                        for i in range(test.AbleToRun):
+                        i = dbtest.Progress
+                        while i < test.repetition:
                             test = Test.objects.filter(id=request.data["id"])[0]
                             if(test.AbleToRun):
                                 timeout = int(test.timeout)*1000
                                 temp = driver.query(dbtest.query)
                                 dbtest.Progress +=1
                                 dbtest.save()
+                                i += 1
                             else:
                                 break
                         end = time.time()
                         dbtest.Test_Duration += end - start
                         dbtest.save()
-                        if(test.AbleToRun):
-                            test.Progress +=1
-                            test.save()
+                        driver.close()
                         return Response(status = status.HTTP_200_OK)
-                    return
-                
+                        
                 elif((str(dbtype)) == "Postgres"):
                     if(test.AbleToRun):
                         connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
                         start = time.time()
-                        i = db.Progress
-                        for i in range(test.AbleToRun):
+                        i = dbtest.Progress
+                        while i < test.repetition:
                             test = Test.objects.filter(id=request.data["id"])[0]
                             if(test.AbleToRun):
                                 cursor =connections.cursor()
@@ -246,14 +239,13 @@ class ContinueTestView(APIView):
                                 cursor.close()
                                 dbtest.Progress +=1
                                 dbtest.save()
+                                i += 1
                             else:
                                 break
                         end = time.time()
                         dbtest.Test_Duration += end - start
                         dbtest.save()
-                        if(test.AbleToRun):
-                            test.Progress +=1
-                            test.save()
+                        connections.close()    
                         return Response(status = status.HTTP_200_ok)
         
         return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -279,9 +271,15 @@ class GetNbOfDoneView(APIView):
     def post(self, request):
         if "id" in request.data:
             if Test.objects.filter(id=request.data["id"]).exists():
-                nboftest = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
-                pdone = (int(Test.objects.filter(id=request.data["id"])[0].Progress)/len(nboftest))*100
-                return JsonResponse(pdone,safe= False)
+                qrs = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
+                test = Test.objects.filter(id=request.data["id"])[0]
+                rep = int(test.repetition)
+                qrsdone = qrs.annotate(done=Sum('Nb_of_done'))[0].done
+                prog = ((qrsdone)/(rep*len(qrs)))*100
+                test.Progress = prog
+                test.save()
+                #pdone = (int(test.Progress)/(rep*len(qrs)))*100
+                return JsonResponse(round(prog),safe= False)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
