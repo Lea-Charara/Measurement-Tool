@@ -1,9 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:500');
 
 * {
-    box-sizing: border-box;
     margin: 0;
-    padding: 3px;
     background-color: #24252A;
 }
 
@@ -96,9 +94,7 @@ div {
     margin: 4px 2px;
     cursor: pointer;
   }
-  * {
-    box-sizing: border-box;
-  }
+ 
 
   .column {
     float: left;
@@ -169,4 +165,11 @@ div {
     border-radius: 50%;
     display: inline-block;
   }
+
+  .loadbar{
+    background-color: #edf0f1;
+}
+.started{
+  background-color: limegreen;
+}
 
