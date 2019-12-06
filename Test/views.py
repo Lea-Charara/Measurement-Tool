@@ -111,7 +111,7 @@ class BeginTestView(APIView):
                                 dbtest.Progress +=1
                                 dbtest.save()
                             else :
-                                print(test.Progress)
+                               
                                 print("stop")
                                 break
                         end = time.time()
@@ -130,10 +130,10 @@ class BeginTestView(APIView):
                             if(test.AbleToRun):
                                 timeout = int(test.timeout)*1000
                                 temp = driver.query(dbtest.query +" dbms.transaction.timeout= "+str(timeout))
-                                dbtest.Nb_of_done +=1
+                                dbtest.Progress +=1
                                 dbtest.save()
                             else :
-                                print(test.Nb_of_done)
+                                
                                 print("stop")
                                 break
                         end = time.time()
@@ -274,7 +274,7 @@ class GetNbOfDoneView(APIView):
                 qrs = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
                 test = Test.objects.filter(id=request.data["id"])[0]
                 rep = int(test.repetition)
-                qrsdone = qrs.annotate(done=Sum('Nb_of_done'))[0].done
+                qrsdone = qrs.annotate(done=Sum('Progress'))[0].done
                 prog = ((qrsdone)/(rep*len(qrs)))*100
                 test.Progress = prog
                 test.save()
