@@ -63,7 +63,6 @@ class GetTimes(APIView):
                 average=0
                 for i in range (len(dbtst)):
                     Values = dbtst[i].Test_Duration
-
                     if Values < Min and Values != 0:
                         Min = Values
                     if Values > Max and Values !=0:
