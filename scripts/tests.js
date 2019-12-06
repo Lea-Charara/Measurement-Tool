@@ -10,6 +10,16 @@ $("#tests").on('click','#edit', function(){
 
 });
 
+//  View Button
+
+$("#tests").on('click','#view', function(){
+    var elems = $(this).parent();
+    var testID = parseInt($(elems).parent().attr('id').split('-')[1]);
+
+    location.href = "View_Tests.html?test_id="+testID;
+
+});
+
 
 //  I kept the localhost for you to test when done change it back to measurementtoolbackend
 
