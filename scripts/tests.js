@@ -2,23 +2,15 @@ var intervals = {};
 
 // Edit button
 
-$("#tests").on('click','#edit', function(){
-    var elems = $(this).parent();
-    var testID = parseInt($(elems).parent().attr('id').split('-')[1]);
-
-    location.href = "Edit_Test_Page.html?var="+testID;
-
-});
+function Edit(test_id){
+    location.href = "Edit_Test_Page.html?var="+test_id;
+}
 
 //  View Button
 
-$("#tests").on('click','#view', function(){
-    var elems = $(this).parent();
-    var testID = parseInt($(elems).parent().attr('id').split('-')[1]);
-
-    location.href = "View_Tests.html?test_id="+testID;
-
-});
+function View(test_id){
+    location.href = "View_Tests.html?test_id="+test_id;
+};
 
 
 //  I kept the localhost for you to test when done change it back to measurementtoolbackend
@@ -155,7 +147,7 @@ $(window).on("load",function(){
                 $("#newTest").show();
                 for(i = 0;i < response.length;i++){
                     var test = response[i];
-                    $("#tests").append('<div class ="test" id="test-'+test.id+'"><p>'+test.name+'</p><div class="inner"><div class="loadbar w3-round-xlarge" id="barDiv" style="width: 70%"><div id="bar" class="loadbar w3-round-xlarge" style="width:'+test.Progress+'%;height: 20px"></div></div>&emsp;<p id="prog">'+test.Progress+'%</p>&emsp;<button type="button" id="start" class="button" onclick="StartTest('+test.id+')"><i class="fa fa-play" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="pause" class="button" onclick="PauseTest('+test.id+')" disabled><i class="fa fa-pause" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="stop" class="button" onclick="StopTest('+test.id+')" disabled><i class="fa fa-stop" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button>&emsp;&emsp;<button type="button" id="edit" class="button"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button><i id="view" class="fa fa-eye" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></div>');
+                    $("#tests").append('<div class ="test" id="test-'+test.id+'"><p>'+test.name+'</p><div class="inner"><div class="loadbar w3-round-xlarge" id="barDiv" style="width: 70%"><div id="bar" class="loadbar w3-round-xlarge" style="width:'+test.Progress+'%;height: 20px padding:0"></div></div>&emsp;<p id="prog">'+test.Progress+'%</p>&emsp;<button type="button" id="start" class="button" onclick="StartTest('+test.id+')"><i class="fa fa-play" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="pause" class="button" onclick="PauseTest('+test.id+')" disabled><i class="fa fa-pause" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="stop" class="button" onclick="StopTest('+test.id+')" disabled><i class="fa fa-stop" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button>&emsp;&emsp;<button type="button" id="edit" class="button" onClick="Edit('+test.id+')"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="view" class="button" onClick="View('+test.id+')"><i class="fa fa-eye" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button></div>');
                     intervals[test.id]=null;
                 }
             }
