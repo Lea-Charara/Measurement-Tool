@@ -93,6 +93,7 @@ class BeginTestView(APIView):
                 db = Database.objects.filter(id=dbtest.DB_id_id)[0]
                 dbtype = Type.objects.filter(typename=db.dbtype).first()
                 dbtest.Progress = 0
+                
                 if((str(dbtype)) == "Cassandra"):
                     return
                 
