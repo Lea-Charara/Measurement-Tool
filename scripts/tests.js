@@ -50,7 +50,6 @@ function StartTest(test_id){
     var prog = $(elems).find("#prog");
     
     try{
-    
         $.ajax({
             type: "POST",
             dataType: "json",
@@ -91,6 +90,8 @@ function StartTest(test_id){
 
 //  Restart
 function RestartTest(test_id) {
+    
+    
     // Placeholder
     var elems = $("#test-"+test_id).children();
     $(elems).find("#start").show();
@@ -98,6 +99,11 @@ function RestartTest(test_id) {
     $(elems).find("#stop").show();
     $(elems).find("#edit").attr("disabled", true);
     $(elems).find("#restart").hide();
+    StartTest(test_id)
+   
+
+    
+    
 }
 
 

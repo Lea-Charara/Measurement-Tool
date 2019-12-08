@@ -1,11 +1,11 @@
 
-
+//http://127.0.0.1:8000/databases/affectedtests/ returns a list the [0] is total of affected queries and [1] is those that will be left with no queries
 $(window).on('load',function(){
     $("#no_DBs").hide();
     $("#databases").hide();
     $("#newDB").hide();
     $.ajax({
-        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
+        url: "http://127.0.0.1:8000/databases/getdatabases/",
     
         dataType: "json",
         success: function( response ) {
@@ -16,8 +16,7 @@ $(window).on('load',function(){
                 $("#databases").show();
                 $("#newDB").show();
                 for(i = 0;i < response.length;i++){
-                    
-                    var Database = response[i];
+                    var Database = response[i][0];
                     var name = Database.name + ""
                     $("#databases").append('<div class ="db" id="db-'+Database.id+'"><div class="inner"><p>'+Database.name+'</p><div><a id="edit" href="Edit_Database_Page.html?var='+Database.id+'"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></a><button type="button" id="delete" class="button" onclick="deletedb('+Database.id+')"><i class="fa fa-trash" style="color:red;font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button></div></div>')
                 }
