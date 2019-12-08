@@ -21,25 +21,15 @@ function StartTest(test_id){
     var prog = $(elems).find("#prog");
     
     try{
-    //  New start
-    if($(bar).hasClass("loadbar"))    
+    
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: "https://measurementtoolbackend.herokuapp.com/tests/begintest/",
+            url: "http://127.0.0.1:8000/tests/begintest/",
             data : JSON.stringify({id : test_id}),
             contentType: "application/json; charset=utf-8"
         })
-    //  Unpause
-    else if($(bar).hasClass("paused"))
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "https://measurementtoolbackend.herokuapp.com/tests/continuetest/",
-            data : JSON.stringify({id : test_id}),
-            contentType: "application/json; charset=utf-8"
-        })
-
+    
     $(elems).find("#start").attr("disabled", true);
     $(elems).find("#pause").attr("disabled", false);
     $(elems).find("#stop").attr("disabled", false);
@@ -57,7 +47,7 @@ function StartTest(test_id){
             clearInterval(intervals[test_id]);
             intervals[test_id] = null;
         } 
-    }, 1);
+    }, 25);
 }
     catch(e){
         console.log(e);
@@ -71,7 +61,7 @@ function PauseTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://measurementtoolbackend.herokuapp.com/tests/abletorun/",
+        url: "http://127.0.0.1:8000/tests/abletorun/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8"
     })
@@ -90,7 +80,7 @@ function StopTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://measurementtoolbackend.herokuapp.com/tests/stoptest/",
+        url: "http://127.0.0.1:8000/tests/stoptest/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8"
     })
@@ -119,7 +109,7 @@ function UpdateTest(test_id){
     $.ajax({
         async: false,
         type: "POST",
-        url: "https://measurementtoolbackend.herokuapp.com/tests/progress/",
+        url: "http://127.0.0.1:8000/tests/progress/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
         success: function(response) {
@@ -134,7 +124,7 @@ $(window).on("load",function(){
     $("#tests").hide();
     $("#newTest").hide();
     $.ajax({
-        url: "https://measurementtoolbackend.herokuapp.com/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
+        url: "http://127.0.0.1:8000/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
         dataType: "json",
         success: function( response ) {
             $("#loading").hide();
