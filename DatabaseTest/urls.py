@@ -8,4 +8,5 @@ urlpatterns = [
     path('getdbtests/', GetDBTestView.as_view()),
     path('removedbtestid/', RemoveDBTestView_byTest_id.as_view()),
     path('Times/',GetTimes.as_view())
+    path('GetProgress/',GetProgress.as_view())
 ]
