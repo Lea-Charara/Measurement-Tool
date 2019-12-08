@@ -6,19 +6,19 @@
         <title>View Tests</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="View_Tests.css">
-        <script src="View_Tests.js"></script>
+        <link rel="stylesheet" href="../styles/View_Tests.css">
+        <script src="../scripts/View_Tests.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
     </head>
     <body>
-        
-        <div class="main">
-        <div class="navbar" >
         <header>
             <div align="Center">
            <p >View Tests</p>
            </div>
             <nav>
-                <button class="button button3"><a href="contents/tests.html">Done</a></button>
+                <button class="button button3"><a href="tests.html">Done</a></button>
                 
             </nav>
         </header>
@@ -59,42 +59,24 @@
                             <br/>
                             <table style="width: 100%; height: 50%" >
                               <tr>
-                                <th>Name</th>
                                 <th>Loading</th> 
                                 <th>Time</th>
                               </tr>
                               <tr>
-                                <td align="center">1</td>
                                 <td>
-                                  <div id="myProgress">
-                                    <div id="myBar">10%</div>
+                                  <div class="loadbar w3-round-xlarge" id="barDiv" style="width: 100%;height:20px">
+                                    <div id="bar" class="started w3-round-xlarge" style="width:50%;height: 20px">
+                                    </div>
                                   </div>
                                   
                                 </td>
                                 <td align="center">10s</td>
                               </tr>
-                              <tr>
-                                <td align="center">2</td>
-                                <td>
-                                  <div id="myProgress">
-                                  <div id="myBar">10%</div>
-                                </div>
-                                </td>
-                                <td align="center">12s</td>
-                              </tr>
-                              <tr>
-                                <td align="center">3</td>
-                                <td>
-                                    <div id="myProgress">
-                                        <div id="myBar">10%</div>
-                                      </div>                                      
-                                </td>
-                                <td align="center">16s</td>
-                              </tr>
+                              
                             </table>
                         </div>
                          
             
-        <button onclick="move()" style="background-color: green">Start</button> 
+        
     </body>
 </html>

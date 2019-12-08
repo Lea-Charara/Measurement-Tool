@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:500');
+
+.swal2-modal {
+    background-color: #24252A !important;
+}
+
+.swal2-title {
+    font-family: "Montserrat", sans-serif !important;
+    color: #edf0f1 !important;
+}
+
+.swal2-styled {
+    font-family: "Montserrat", sans-serif !important;
+    color: #edf0f1 !important;
+}
