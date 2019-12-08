@@ -77,64 +77,68 @@ class RemoveTestView(APIView):
 
 
 
-
+def Reset(id):
+        dbtests = DatabaseTest.objects.filter(Test_id_id=id)
+        for dbtest in dbtests:
+            dbtest.Test_Duration = 0
+            dbtest.Progress = 0
+            dbtest.save()
 class BeginTestView(APIView):
+    
+
     def post(self, request):
-        
         if "id" in request.data:
-            
             test = Test.objects.filter(id=request.data["id"])[0]
-            test.Progress = 0
-            if(not(test.AbleToRun)):
-                test.AbleToRun = True
+            if(test.Progress == 100):
+                Reset(id = request.data["id"])
+                test.Progress = 0
+                
+            test.Status = 1
             test.save()
             tests = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
-            for dbtest in tests:
+            for i in range(len(tests)):
+                dbtest = tests[i]
                 db = Database.objects.filter(id=dbtest.DB_id_id)[0]
                 dbtype = Type.objects.filter(typename=db.dbtype).first()
-                dbtest.Progress = 0
-                
+              
                 if((str(dbtype)) == "Cassandra"):
                     return
                 
                 if((str(dbtype)) == "OrientDB"):
-                    if(test.AbleToRun):
+                    if(test.Status == 1):
                         client = pyorient.OrientDB(str(db.host), int(db.port)) 
-                        #session_id = client.connect(str(db.username), str(db.password))
                         client.db_open(str(db.name), str(db.username), str(db.password))
                         start = time.time()
-                        for i in range(test.repetition):
+                        for i in range(dbtest.Progress,test.repetition):
                             test = Test.objects.filter(id=request.data["id"])[0]
-                            print(test.AbleToRun)
-                            if(test.AbleToRun):
+                            if(test.Status == 1):
                                 timeout = int(test.timeout)*1000
                                 temp = client.query(dbtest.query +" TIMEOUT "+str(timeout))
                                 dbtest.Progress +=1
                                 dbtest.save()
                             else :
-                               
-                                print("stop")
-                                break
+                               break
                         end = time.time()
-                        print(end - start)
-                        dbtest.Test_Duration = end - start
+                        dbtest.Test_Duration += end - start
                         dbtest.save()
-                        client.db_close()                        
-                        return Response(status = status.HTTP_200_OK)
+                        client.db_close()
+                        if(test.Progress == 100):
+                            test.Status = 0
+                            test.save()
+                            return Response(status = status.HTTP_200_OK)                       
                 elif((str(dbtype)) == "Neo4j"):
-                    if(test.AbleToRun):
+                    if(test.Status == 1):
                         driver = GraphDatabase.driver(uri="bolt://"+str(db.host) +":"+int(db.port), auth=(str(db.username), str(db.password)))
                         start = time.time()
                         for i in range(test.repetition):
                             test = Test.objects.filter(id=request.data["id"])[0]
-                            print(test.AbleToRun)
-                            if(test.AbleToRun):
+                            print(test.Status)
+                            if(test.Status == 1):
                                 timeout = int(test.timeout)*1000
                                 temp = driver.query(dbtest.query +" dbms.transaction.timeout= "+str(timeout))
                                 dbtest.Progress +=1
                                 dbtest.save()
                             else :
-                                
                                 print("stop")
                                 break
                         end = time.time()
@@ -142,22 +146,20 @@ class BeginTestView(APIView):
                         dbtest.Test_Duration = end - start
                         dbtest.save()
                         driver.close()
-                        return Response(status = status.HTTP_200_OK)
                 elif((str(dbtype)) == "Postgres"):
-                    if(test.AbleToRun):
+                    if(test.Status == 1):
                         connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
                         start = time.time()
                         for i in range(test.repetition):
                             test = Test.objects.filter(id=request.data["id"])[0]
-                            print(test.AbleToRun)
-                            if(test.AbleToRun):
+                            print(test.Status)
+                            if(test.Status == 1):
                                 cursor = connections.cursor()
                                 temp = cursor.execute(dbtest.query)
                                 cursor.close()
                                 dbtest.Progress +=1
                                 dbtest.save()
                             else :
-                                print(test.Progress)
                                 print("stop")
                                 break
                         end = time.time()
@@ -165,91 +167,12 @@ class BeginTestView(APIView):
                         dbtest.Test_Duration = end - start
                         dbtest.save()
                         connections.close()
-                        return Response(status = status.HTTP_200_OK)
+                return Response(status = status.HTTP_200_OK)
+            
         return Response(status = status.HTTP_400_BAD_REQUEST)
+    
 
-class ContinueTestView(APIView):
-    def post(self, request):
-        
-        if "id" in request.data:
-            test = Test.objects.filter(id=request.data["id"])[0]
-            test.AbleToRun = True
-            test.save()
-            tests = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
-            for dbtest in tests:
-                db = Database.objects.filter(id=dbtest.DB_id_id)[0]
-                dbtype = Type.objects.filter(typename=db.dbtype).first()
-                
-                if((str(dbtype)) == "Cassandra"):
-                    return
-                
-                if((str(dbtype)) == "OrientDB"):
-                    if(test.AbleToRun):
-                        client = pyorient.OrientDB(str(db.host), int(db.port))
-                        client.db_open(str(db.name), str(db.username), str(db.password))
-                        start = time.time()
-                        i = dbtest.Progress
-                        #for i in range(test.AbleToRun):
-                        while i < test.repetition:
-                            test = Test.objects.filter(id=request.data["id"])[0]
-                            if(test.AbleToRun):
-                                timeout = int(test.timeout)*1000
-                                temp = client.query(dbtest.query)
-                                dbtest.Progress +=1
-                                dbtest.save()
-                                i += 1
-                            else:
-                                break
-                        end = time.time()
-                        dbtest.Test_Duration += end - start
-                        dbtest.save()
-                        client.db_close()
-                        return Response(status = status.HTTP_200_OK)
-                
-                elif((str(dbtype)) == "Neo4j"):
-                    if(test.AbleToRun):
-                        driver = GraphDatabase.driver(uri="bolt://"+str(db.host) +":"+int(db.port), auth=(str(db.username), str(db.password)))
-                        start = time.time()
-                        i = dbtest.Progress
-                        while i < test.repetition:
-                            test = Test.objects.filter(id=request.data["id"])[0]
-                            if(test.AbleToRun):
-                                timeout = int(test.timeout)*1000
-                                temp = driver.query(dbtest.query)
-                                dbtest.Progress +=1
-                                dbtest.save()
-                                i += 1
-                            else:
-                                break
-                        end = time.time()
-                        dbtest.Test_Duration += end - start
-                        dbtest.save()
-                        driver.close()
-                        return Response(status = status.HTTP_200_OK)
-                        
-                elif((str(dbtype)) == "Postgres"):
-                    if(test.AbleToRun):
-                        connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
-                        start = time.time()
-                        i = dbtest.Progress
-                        while i < test.repetition:
-                            test = Test.objects.filter(id=request.data["id"])[0]
-                            if(test.AbleToRun):
-                                cursor =connections.cursor()
-                                temp = cursor.execute(dbtest.query)
-                                cursor.close()
-                                dbtest.Progress +=1
-                                dbtest.save()
-                                i += 1
-                            else:
-                                break
-                        end = time.time()
-                        dbtest.Test_Duration += end - start
-                        dbtest.save()
-                        connections.close()    
-                        return Response(status = status.HTTP_200_ok)
-        
-        return Response(status = status.HTTP_400_BAD_REQUEST)
+
 
 
 class StopTest(APIView):
@@ -257,7 +180,7 @@ class StopTest(APIView):
         if "id" in request.data:
             test = Test.objects.filter(id=request.data["id"])[0]
             test.Progress = 0
-            test.AbleToRun = False
+            test.Status = 0
             test.save()
             tests = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
             for dbtest in tests:
@@ -268,7 +191,7 @@ class StopTest(APIView):
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
-class GetNbOfDoneView(APIView):
+class GetProgressView(APIView):
     def post(self, request):
         if "id" in request.data:
             if Test.objects.filter(id=request.data["id"]).exists():
@@ -284,14 +207,32 @@ class GetNbOfDoneView(APIView):
             return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
-class AbleToRun(APIView):
+class Status(APIView):
     def post(self, request):
         if "id" in request.data:
             if Test.objects.filter(id=request.data["id"]).exists():
                 temp = Test.objects.filter(id=request.data["id"])[0]
-                temp.AbleToRun = not(temp.AbleToRun)
+                temp.Status = 2
                 temp.save()
-                print(temp.AbleToRun)
                 return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
+# class DbInUse(APIView):
+#     def post(self,request):
+#         if "id" in request.data:
+#             if Database.objects.filter(id=request.data["id"]).exists():
+#                 dbtests = list(DatabaseTest.objects.filter(db_id=request.data["id"]).values())
+#                 for dbtest in dbtests:
+#                     test = Test.objects.filter(id=request.data["id"])[0]
+#                     if(test.Status == 1):
+#                         return True
+#                 return False
+
+class RestartTestView(APIView):
+    def post(self, request):
+        if "id" in request.data:
+            print("yes")
+            start = BeginTestView()
+            start.post(request)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)

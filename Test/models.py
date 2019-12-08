@@ -7,7 +7,7 @@ class Test(models.Model):
     repetition = models.IntegerField()
     timeout = models.IntegerField()
     Progress = models.IntegerField(default=0) 
-    AbleToRun = models.BooleanField(default=True)
+    Status = models.IntegerField(default=0)
     
     def __str__(self):
         return self.name
