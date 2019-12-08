@@ -16,7 +16,7 @@ function View(test_id){
 
 function DeleteTest(test_id){
     var test = $("#test-"+test_id);
-
+    var tests = $(test).siblings().length;
     Swal.fire({
         title: `Are you sure you want to delete ${$(test).children().find("p").text()}?`,
         showCancelButton: true,
@@ -26,7 +26,10 @@ function DeleteTest(test_id){
     }).then((result) => {
         if(result.value){
           // $(test).children().find(".button").attr("disabled", true);
-            $(test).fadeOut(200);
+            $(test).fadeOut(200, function() {
+                if(tests <= 4)
+                $("#tests").mCustomScrollbar("destroy");
+            });
             $.ajax({
                 type: "DELETE",
                 url: "https://measurementtoolbackend.herokuapp.com/tests/removetest/",
@@ -190,7 +193,7 @@ $(window).on("load",function(){
                 $("#tests").show();
                 $("#newTest").show();
                 for(i = 0;i < response.length;i++){
-                    var test = response[i]; //style="padding-left: 89%;"
+                    var test = response[i];
                     intervals[test.id]=null;
 
                     $("#tests").append('<div class ="test" id="test-'+test.id+'"><div class="up"><p>'+test.name+'</p><button type="button" id="delete" class="button" onclick="DeleteTest('+test.id+')" style="float: right; color: red;"><i class="fa fa-times" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button></div><div class="inner"><div class="loadbar w3-round-xlarge" id="barDiv" style="width: 70%"><div id="bar" class="'+((test.Progress > 0 && test.Progress < 100)? "paused" : (test.Progress == 100)?"started":"loadbar")+' w3-round-xlarge" style="width:'+test.Progress+'%;height: 20px; padding:0"></div></div>&emsp;<span id="prog" style="width:5%;">'+test.Progress+'%</span>&emsp;<button type="button" id="start" class="button" onclick="StartTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':'')+'><i class="fa fa-play" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="pause" class="button" onclick="PauseTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':'')+' disabled><i class="fa fa-pause" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="stop" class="button" onclick="StopTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':(test.Progress == 0)?"disabled":'')+'><i class="fa fa-stop" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="restart" class="button" onclick="RestartTest('+test.id+')"'+ ((test.Progress != 100)?'style="display:none;"':'')+'><i class="fa fa-repeat" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button>&emsp;&emsp;<button type="button" id="edit" class="button" onClick="Edit('+test.id+')"'+((test.Progress > 0 && test.Progress < 100)? "disabled":"")+'><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="view" class="button" onClick="View('+test.id+')"><i class="fa fa-eye" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button></div>');
@@ -198,11 +201,15 @@ $(window).on("load",function(){
                     PauseTest(test.id);
                 }
             }
-            $(".tests").mCustomScrollbar({
-                axis:"y",
-                theme: "minimal",
-                setHeight: "20%"
+            if(response.length > 4)
+                $("#tests").mCustomScrollbar({
+                    axis:"y",
+                    theme: "minimal",
+                    setHeight: "20%",
+                    advanced: {updateOnContentResize: true},
+                    scrollInertia: 60
             });
+            // $("#tests").mCustomScrollbar("update");    
         },        
         error:function(){
             $("#no_tests").show();
