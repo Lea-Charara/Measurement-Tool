@@ -217,22 +217,3 @@ class Status(APIView):
                 return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
-# class DbInUse(APIView):
-#     def post(self,request):
-#         if "id" in request.data:
-#             if Database.objects.filter(id=request.data["id"]).exists():
-#                 dbtests = list(DatabaseTest.objects.filter(db_id=request.data["id"]).values())
-#                 for dbtest in dbtests:
-#                     test = Test.objects.filter(id=request.data["id"])[0]
-#                     if(test.Status == 1):
-#                         return True
-#                 return False
-
-class RestartTestView(APIView):
-    def post(self, request):
-        if "id" in request.data:
-            print("yes")
-            start = BeginTestView()
-            start.post(request)
-        else:
-            return Response(status = status.HTTP_400_BAD_REQUEST)
