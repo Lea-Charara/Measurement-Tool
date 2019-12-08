@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import Database
 from Type.models import Type
 from django.http import JsonResponse
+from Test.models import Test
 from DatabaseTest.models import DatabaseTest
 # Database Drivers
 import pyorient
@@ -72,12 +73,23 @@ class RemoveDatabaseView(APIView):
             return Response(status = status.HTTP_400_BAD_REQUEST)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
+def InUse(id):
+        dbtests = DatabaseTest.objects.filter(pk=id)
+        for dbtest in dbtests:
+            test = Test.objects.filter(pk=dbtest.Test_id_id)[0]
+            if(test.Status == 1):
+                return True
+        return False
 class GetAllDataBasesView(APIView):
 
     def get(self, request):
         dbs = Database.objects.all().values()
-        dbs_list = list(dbs)
+        dbs_list = list()
+        for db in dbs:
+            dbs_list.append([db,InUse(db["id"])])
         return JsonResponse(dbs_list,safe = False)
+    
+
        
 
 class UpdateDatabaseView(APIView):
@@ -106,4 +118,25 @@ class GetDatabaseView(APIView):
     def post(self, request):
         if "id" in request.data:
             return JsonResponse(list(Database.objects.filter(id=request.data["id"]).values()),safe = False)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+        
+class AffectedTests(APIView):
+    def post(self, request):
+        print(request.data)
+        if "id" in request.data:
+            total = 0
+            noqueries = 0
+            dbtests = DatabaseTest.objects.filter(DB_id_id=request.data["id"])
+            tests = Test.objects.all().values()
+            for test in tests:
+                count = 0
+                for dbtest in dbtests:
+                    if dbtest.Test_id_id == test["id"]:
+                        count +=1
+                if count > 0:
+                    total +=1
+                qrs = DatabaseTest.objects.filter(Test_id_id=test["id"])
+                if (len(qrs) == 1 and count == 1):
+                    noqueries +=1
+            return JsonResponse([total, noqueries],safe = False)
         return Response(status = status.HTTP_400_BAD_REQUEST)
