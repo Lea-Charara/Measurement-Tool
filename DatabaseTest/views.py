@@ -74,3 +74,24 @@ class GetTimes(APIView):
                 return JsonResponse(List,safe=False)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+
+class GetProgress(APIView):
+    def post(self, request):
+        if "id" in request.data:
+            if DatabaseTest.objects.filter(id=request.data["id"]).exists():
+                dbtest= DatabaseTest.objects.filter(id=request.data["id"])[0]
+                test_id = int(dbtest.Test_id)
+                test = Test.objects.filter(id=Test_id)[0]
+                rep = int(test.repetition)
+                prog = (int(dbtest.Progress)/(rep))*100
+                test.Progress = prog
+                test.save()
+                
+                List12 = [round(prog), round(dbtest.Test_Duration)]
+               
+                return JsonResponse(List12,safe= False)
+
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+
+#GetProgress: dbtest.Progress/test.progress * 100 -> return Progress , dbtest time
