@@ -12,6 +12,6 @@ urlpatterns = [
     path('begintest/',BeginTestView.as_view()),
     path('abletorun/',Status.as_view()),
     path('stoptest/',StopTest.as_view()),
-    path('restart/',RestartTestView.as_view())
+    
     
 ]
