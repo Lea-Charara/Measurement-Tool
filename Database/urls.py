@@ -7,5 +7,6 @@ urlpatterns = [
     path('getdatabases/', GetAllDataBasesView.as_view()),
     path('updatedatabase/', UpdateDatabaseView.as_view()),
     path('getdatabase/',GetDatabaseView.as_view()),
-    path('affectedtests/',AffectedTests.as_view())
+    path('affectedtests/',AffectedTests.as_view()),
+    path('getaffectedtests/',GetAffectedTests.as_view())
     ]

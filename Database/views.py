@@ -132,11 +132,33 @@ class AffectedTests(APIView):
                 count = 0
                 for dbtest in dbtests:
                     if dbtest.Test_id_id == test["id"]:
-                        count +=1
-                if count > 0:
-                    total +=1
-                qrs = DatabaseTest.objects.filter(Test_id_id=test["id"])
-                if (len(qrs) == 1 and count == 1):
-                    noqueries +=1
+                        total +=1
+                        qrs = DatabaseTest.objects.filter(Test_id_id=test["id"])
+                        if (len(qrs) == 1):
+                            noqueries +=1
+                        break
             return JsonResponse([total, noqueries],safe = False)
         return Response(status = status.HTTP_400_BAD_REQUEST)
+
+class GetAffectedTests(APIView):
+    def post(self, request):
+        if "id" in request.data:
+            withqrs = list()
+            noqrs = list()
+            testcounter = {}
+            dbtests = DatabaseTest.objects.filter(DB_id_id=request.data["id"])
+            tests = Test.objects.all().values()
+            for test in tests:
+                for dbtest in dbtests:
+                    if dbtest.Test_id_id == test["id"]:
+                        qrs = DatabaseTest.objects.filter(Test_id_id=test["id"])
+                        if (len(qrs) == 1):
+                            noqrs.append(test["name"])
+                        else:
+                            withqrs.append(test["name"])
+            return JsonResponse([withqrs,noqrs], safe = False)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+            
+            
+        
+                        
