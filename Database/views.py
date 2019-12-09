@@ -68,6 +68,14 @@ class RemoveDatabaseView(APIView):
     def delete(self, request):
         if "id" in request.data:
             if Database.objects.filter(pk=request.data["id"]).exists():
+                dbtests = DatabaseTest.objects.filter(DB_id_id=request.data["id"])
+                tests = Test.objects.all().values()
+                for test in tests:
+                    for dbtest in dbtests:
+                        if dbtest.Test_id_id == test["id"]:
+                            qrs = DatabaseTest.objects.filter(Test_id_id=test["id"])
+                            if (len(qrs) == 1):
+                               Test.objects.filter(pk = test["id"]).delete()
                 Database.objects.filter(pk=request.data["id"]).delete()
                 return Response(status = status.HTTP_200_OK)
             return Response(status = status.HTTP_400_BAD_REQUEST)
