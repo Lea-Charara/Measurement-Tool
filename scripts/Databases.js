@@ -1,5 +1,8 @@
 
 //http://127.0.0.1:8000/databases/affectedtests/ returns a list the [0] is total of affected queries and [1] is those that will be left with no queries
+
+//http://127.0.0.1:8000/databases/getaffectedtests/ returns a list that contains 2 list the first one contains the name of the tests that will still have queries and the second list contains the name of the tests with no queries left
+
 $(window).on('load',function(){
     $("#no_DBs").hide();
     $("#databases").hide();
