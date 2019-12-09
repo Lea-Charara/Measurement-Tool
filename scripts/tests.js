@@ -91,6 +91,13 @@ function StartTest(test_id){
 //  Restart
 function RestartTest(test_id) {
     
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "http://127.0.0.1:8000/tests/restart/",
+        data : JSON.stringify({id : test_id}),
+        contentType: "application/json; charset=utf-8"
+    })
     
     // Placeholder
     var elems = $("#test-"+test_id).children();
@@ -99,10 +106,25 @@ function RestartTest(test_id) {
     $(elems).find("#stop").show();
     $(elems).find("#edit").attr("disabled", true);
     $(elems).find("#restart").hide();
-    StartTest(test_id)
-   
 
-    
+    done = UpdateTest(test_id);
+    intervals[test_id] = setInterval(function() {
+        if(done!= 100){
+            done = UpdateTest(test_id);
+            $(bar).css('width', done + '%');
+            $(prog).text(done * 1  + '%');
+        }
+        else
+        {
+            clearInterval(intervals[test_id]);
+            intervals[test_id] = null;
+            $(elems).find("#start").hide();
+            $(elems).find("#pause").hide();
+            $(elems).find("#stop").hide();
+            $(elems).find("#edit").attr("disabled", false);
+            $(elems).find("#restart").show();
+        } 
+    }, 25);
     
 }
 
@@ -146,15 +168,6 @@ function StopTest(test_id) {
     $(elems).find("#delete").attr("disabled", false);
     $(bar).removeClass("loadbar started paused").addClass("stopped");
 
-    clearInterval(intervals[test_id]);
-    setTimeout(function(){
-    $(bar).fadeOut();
-    $(bar).css('width', '0%'); 
-    $(prog).text('0%'); 
-    $(bar).removeClass("stopped started paused").addClass("loadbar");
-    $(bar).fadeIn();
-    $(elems).find("#start").attr("disabled", false);
-    }, 355);
 
 }
 

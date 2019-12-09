@@ -20,11 +20,11 @@ function on_load(){
         success: function( response ) {
             var databasetype = [];
                 for(i = 0;i < response.length;i++){
-                    $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+' '+ response[i].name +
-                    '" id = '+ response[i].id+' type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
-                    if(!databasetype.includes(response[i].dbtype_id)){
-                        databasetype.push(response[i].dbtype_id);
-                        var responseid = response[i];
+                    $("#db ul li:last").after('<input class= "checkbox '+ response[i][0].dbtype_id+' '+ response[i][0].name +
+                    '" id = '+ response[i][0].id+' type="checkbox" onchange="TextBoxAppear()"/> '+response[i][0].name+'<br />');
+                    if(!databasetype.includes(response[i][0].dbtype_id)){
+                        databasetype.push(response[i][0].dbtype_id);
+                        var responseid = response[i][0];
                         var resname = "";
                         $.ajax({
                             async: false,
@@ -35,7 +35,8 @@ function on_load(){
                                 resname = res[responseid.dbtype_id-1].typename;
                             }
                         });
-                        $("#QueriesContainer").append('<input class="queries '+ response[i].dbtype_id+ ' '+ response[i].name+'" type="text" placeholder='+ resname +' value = ""><br />');
+                        
+                        $("#QueriesContainer").append('<input class="queries '+ responseid.dbtype_id+ ' '+ responseid.name+'" type="text" placeholder='+ resname +' value = ""><br />');
                         
                     }
 
@@ -49,9 +50,11 @@ function on_load(){
         contentType: "application/json",
         success: function(response){
             var i;
+            
             for(i=0;i<response.length;i++){
                 temp = response[i].query
                 db = document.getElementById(response[i].DB_id_id)
+                console.log(db)
                 db.checked = true;
                 type = $(db).attr('class').split(' ')[1];
                 TextBoxAppear()
