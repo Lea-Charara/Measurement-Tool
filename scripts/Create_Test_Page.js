@@ -9,10 +9,11 @@ function showdb(){
             var databasetype = [];
                 for(i = 0;i < response.length;i++){
                     
-                    $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+' '+ response[i].name +'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
+                    $("#db ul li:last").after('<input class= "checkbox '+ response[i][0].dbtype_id+' '+ response[i][0].name +'" type="checkbox" onchange="TextBoxAppear()"/> '+response[i][0].name+'<br />');
                     if(!databasetype.includes(response[i].dbtype_id)){
-                        databasetype.push(response[i].dbtype_id);
-                        var responseid = response[i];
+                        databasetype.push(response[i][0].dbtype_id);
+                        var responseid = response[i][0];
+                        console.log(responseid)
                         var resname = "";
                         $.ajax({
                             async: false,
@@ -23,7 +24,7 @@ function showdb(){
                                 resname = res[responseid.dbtype_id-1].typename;
                             }
                         });
-                        $("#QueriesContainer").append('<input class="queries '+ response[i].dbtype_id+ ' '+ response[i].name+'" type="text" placeholder='+ resname +'><br />');
+                        $("#QueriesContainer").append('<input class="queries '+ responseid.dbtype_id+ ' '+ responseid.name+'" type="text" placeholder='+ resname +'><br />');
                         
                     }
 
