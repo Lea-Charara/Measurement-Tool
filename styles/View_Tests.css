@@ -83,8 +83,8 @@ div {
     border-radius: 50px;	
 }
 .button {
-    background-color: rgb(0, 255, 0);
-    border: none;
+    background-color: green;
+    border: green;
     color: white;
     padding: 15px 32px;
     text-align: center;
@@ -100,8 +100,6 @@ div {
     float: left;
     padding: 10px;
     height: 800px;
-    border: 1px solid black;
-    border-color: white;
   }
   
   .First {
@@ -132,14 +130,12 @@ div {
   
 #rcorners1 {
     border-radius: 25px;
-    border: 2px solid black;
-    padding: 20px; 
-    width: 800px;
-    height: 30px; 
+    border: 1px solid white;
+    width: 100%;
     border-color: white; 
   }
   table, th, td {
-    border: 3px solid black;
+    border: 1px solid white;
     border-collapse: collapse;
     color: white;
     border-color: white;
