@@ -140,7 +140,7 @@ function PauseTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://127.0.0.1:8000/tests/abletorun/",
+        url: "http://127.0.0.1:8000/tests/progress/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8"
     })

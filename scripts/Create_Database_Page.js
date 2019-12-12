@@ -31,7 +31,7 @@ function myFunction() {
    {
          alert("Port Field is not a valid number")
    }
-   else if(IpAddr.value.length == 0)
+   else if(IpAddr.length == 0)
    {
         alert("Host Cannot Be Blank.")
    }
