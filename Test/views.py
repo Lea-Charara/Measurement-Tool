@@ -12,6 +12,7 @@ import json
 import pyorient
 import time
 import psycopg2
+from cassandra.cluster import Cluster
 
 # Create your views here.
 class AddTestView(APIView):
@@ -95,7 +96,27 @@ def start(testid):
         dbtype = Type.objects.filter(typename=db.dbtype).first()
         print(dbtype)
         if((str(dbtype)) == "Cassandra"):
-            return
+            if(test.Status == 1):
+                cluster = Cluster([request.data["host"]],port=int(request.data["port"]))
+                session = cluster.connect() 
+                start = time.time()
+                for i in range(dbtest.Progress,test.repetition):
+                    test = Test.objects.filter(id=testid)[0]
+                    if(test.Status == 1):
+                        timeout = int(test.timeout)*1000
+                        session.execute(dbtest.query)
+                        dbtest.Progress +=1
+                        dbtest.save()
+                    else:
+                        break
+                end = time.time()
+                dbtest.Test_Duration += end - start
+                dbtest.save()
+                session.close()  
+                if(test.Progress == 100):
+                    test.Status = 0
+                    test.save()
+                    return Response(status = status.HTTP_200_OK)      
         if((str(dbtype)) == "OrientDB"):
             if(test.Status == 1):
                 client = pyorient.OrientDB(str(db.host), int(db.port)) 
@@ -114,7 +135,6 @@ def start(testid):
                 dbtest.Test_Duration += end - start
                 dbtest.save()
                 client.db_close()
-                print("finish")
                 if(test.Progress == 100):
                     test.Status = 0
                     test.save()
