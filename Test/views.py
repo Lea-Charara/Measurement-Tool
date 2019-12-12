@@ -88,19 +88,14 @@ def start(testid):
     test.Status = 1
     test.save()
     test = Test.objects.filter(id=testid)[0]
-    print(test.Status)
-    if(test.Progress == 100):
-        Reset(id = testid)
-    tests = DatabaseTest.objects.filter(Test_id_id=testid)
     tests = DatabaseTest.objects.filter(Test_id_id=testid)
     for i in range(len(tests)):
         dbtest = tests[i]
         db = Database.objects.filter(id=dbtest.DB_id_id)[0]
         dbtype = Type.objects.filter(typename=db.dbtype).first()
-        
+        print(dbtype)
         if((str(dbtype)) == "Cassandra"):
             return
-        
         if((str(dbtype)) == "OrientDB"):
             if(test.Status == 1):
                 client = pyorient.OrientDB(str(db.host), int(db.port)) 
@@ -119,6 +114,7 @@ def start(testid):
                 dbtest.Test_Duration += end - start
                 dbtest.save()
                 client.db_close()
+                print("finish")
                 if(test.Progress == 100):
                     test.Status = 0
                     test.save()
@@ -140,7 +136,7 @@ def start(testid):
                 dbtest.Test_Duration = end - start
                 dbtest.save()
                 driver.close()
-        elif((str(dbtype)) == "Postgres"):
+        elif((str(dbtype)) == "Postgresql"):
             if(test.Status == 1):
                 connections = psycopg2.connect(database=str(db.name),user=str(db.username),password=str(db.password),host=str(db.host),port=int(db.port))
                 start = time.time()
@@ -172,6 +168,7 @@ class BeginTestView(APIView):
 class Restart(APIView):
     def post(self,request):
         if "id" in request.data:
+            Reset(request.data["id"])
             start(request.data["id"])
             return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)      
@@ -184,10 +181,7 @@ class StopTest(APIView):
             test.Status = 0
             test.save()
             tests = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
-            for dbtest in tests:
-                dbtest.Progress = 0
-                dbtest.Test_Duration = 0
-                dbtest.save()
+            Reset(request.data["id"])
             return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -199,7 +193,10 @@ class GetProgressView(APIView):
                 qrs = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
                 test = Test.objects.filter(id=request.data["id"])[0]
                 rep = int(test.repetition)
-                qrsdone = qrs.annotate(done=Sum('Progress'))[0].done
+                qrsdone = 0
+                for i in range(len(qrs)):
+                    qrsdone += qrs.annotate(done=Sum('Progress'))[i].done
+                print(qrsdone)
                 prog = ((qrsdone)/(rep*len(qrs)))*100
                 test.Progress = prog
                 test.save()
