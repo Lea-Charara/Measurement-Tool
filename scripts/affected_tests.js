@@ -42,11 +42,26 @@ $(window).on('load',function(){
                 for(i = 0; i< affected.length; i++)
                     $("#affected-tests").append(`<div class="test"><span>${affected[i]}</span></div>`);
                 $("#affected-container").show();
+                if(affected.length > 4)
+                $("#affected-tests").mCustomScrollbar({
+                    axis:"y",
+                    theme: "minimal",
+                    setHeight: "33%",
+                    scrollInertia: 60
+                });
             }
             if(noquery.length != 0){
                 for(i = 0; i< noquery.length; i++)
                     $("#noquery-tests").append(`<div class="test"><span>${noquery[i]}</span></div>`);
                 $("#noquery-container").show();
+
+                if(noquery.length > 4)
+                $("#noquery-tests").mCustomScrollbar({
+                    axis:"y",
+                    theme: "minimal",
+                    setHeight: "33%",
+                    scrollInertia: 60
+                });
             }
         }
     });

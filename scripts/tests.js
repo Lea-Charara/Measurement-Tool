@@ -48,7 +48,7 @@ function connectionError(){
         err = true;
         Swal.fire({
             title: `Connection Error`,
-            html: 'Please check your internet connection and try again.<br><b>The page will now reload.</b>'
+            html: 'Please check your internet connection and try again.<br><br><b>The page will now reload.</b>'
         }).then(() => {
             window.location.reload()
         });
