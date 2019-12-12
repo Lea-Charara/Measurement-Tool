@@ -116,4 +116,5 @@
 
         button:disabled{
             cursor: default;
+            color: #A4A4A4 !important
         }

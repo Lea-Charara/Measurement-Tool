@@ -1,6 +1,6 @@
 function onload(){
     let params = new URLSearchParams(location.search);
-    db_id = params.get('var');
+    db_id = params.get('db_id');
     $.ajax({
         type: "POST",
         url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabase/",
@@ -62,7 +62,7 @@ function myFunction() {
    else
    {
     let params = new URLSearchParams(location.search);
-    db_id = params.get('var');
+    db_id = params.get('db_id');
     $.ajax({
         type: "POST",
         url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabase/",

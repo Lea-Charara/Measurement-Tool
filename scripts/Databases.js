@@ -8,7 +8,7 @@ $(window).on('load',function(){
     $("#databases").hide();
     $("#newDB").hide();
     $.ajax({
-        url: "http://127.0.0.1:8000/databases/getdatabases/",
+        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
     
         dataType: "json",
         success: function( response ) {
@@ -20,14 +20,17 @@ $(window).on('load',function(){
                 $("#newDB").show();
                 for(i = 0;i < response.length;i++){
                     var Database = response[i][0];
-                    var name = Database.name + ""
-                    $("#databases").append('<div class ="db" id="db-'+Database.id+'"><div class="inner"><p>'+Database.name+'</p><div><a id="edit" href="Edit_Database_Page.html?var='+Database.id+'"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></a><button type="button" id="delete" class="button" onclick="deletedb('+Database.id+')"><i class="fa fa-trash" style="color:red;font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button></div></div>')
+                    var state = response[i][1];
+                    $("#databases").append('<div class ="db " id="db-'+Database.id+'"><div class="inner"><p>'+Database.name+'</p><div><button type="button" class="button" id="edit" onClick="Edit('+Database.id+')" '+((state)? "disabled":"")+'><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="delete" class="button" onclick="deletedb('+Database.id+')" style="color:red;" '+((state)? "disabled":"")+'><i class="fa fa-trash" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button></div></div>')
                 }
-                $(".databases").mCustomScrollbar({
-                    axis:"y",
-                    theme: "minimal",
-                    setHeight: "20%"
-                });
+                if(response.length > 6)
+                    $("#databases").mCustomScrollbar({
+                        axis:"y",
+                        theme: "minimal",
+                        setHeight: "20%",
+                        advanced: {updateOnContentResize: true},
+                        scrollInertia: 60
+                    });
             }
         },
         error:function(){
@@ -38,14 +41,50 @@ $(window).on('load',function(){
     
 });
 
-function deletedb(dbid){
-    var a = dbid
+function Edit(db_id){
+    location.href='Edit_Database_Page.html?db_id='+db_id;
+}
+
+function deletedb(db_id){
+    var db = $("#db-"+db_id);
+    var dbs = $(db).siblings().length;
+    var affected = 0;
+    var noquery = 0;
     $.ajax({
-        type: "DELETE",
-        url: "https://measurementtoolbackend.herokuapp.com/databases/removedatabase/",
-        data : { id : a},
-        success: function(){
-            location.reload();
+        type: "POST",
+        url: "https://measurementtoolbackend.herokuapp.com/databases/affectedtests/",
+        data : { id : db_id},
+        success: function( response ){
+            if(response.length != 0){
+                affected = response[0];
+                noquery = response[1];
+
+                Swal.fire({
+                    title: `Are you sure you want to delete ${$(db).children().find("p").text()}?`,
+                    html: ((affected != 0)? `<font size="+2">This action will ${((affected > noquery)? `affect <u>${affected} test/s</u>${((noquery !=0)? ` of which <u>${noquery}</u> will be left without a query and get deleted`:``)}.`:`delete <u>${noquery} test/s</u> that will be left without a query.</font>`)}`:""),
+                    showCancelButton: true,
+                    confirmButtonColor: 'rgb(0,136,169)',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes',
+                    footer: ((affected!=0)? `<u><a href="affected_tests.html?db_id=${db_id}" style="color:#00aad4">More details</a></u>`:'')
+                }).then((result) => {
+                    if(result.value){
+                      // $(db).children().find(".button").attr("disabled", true);
+                        $(db).fadeOut(200, function() {
+                            if(dbs <= 6)
+                            $("#databases").mCustomScrollbar("destroy");
+                        });
+                        $.ajax({
+                            type: "DELETE",
+                            url: "https://measurementtoolbackend.herokuapp.com/databases/removedatabase/",
+                            data : { id : db_id},
+                            success: function(){
+                                $(db).remove();
+                            }
+                        })  
+                    }
+                })
+            }
         }
     })
 }

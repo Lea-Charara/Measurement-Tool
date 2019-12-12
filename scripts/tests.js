@@ -1,9 +1,10 @@
 var intervals = {};
+var err = false;
 
 // Edit button
 
 function Edit(test_id){
-    location.href = "Edit_Test_Page.html?var="+test_id;
+    location.href = "Edit_Test_Page.html?test_id="+test_id;
 }
 
 //  View Button
@@ -42,6 +43,18 @@ function DeleteTest(test_id){
     })
 }
 
+function connectionError(){
+    if(!err){
+        err = true;
+        Swal.fire({
+            title: `Connection Error`,
+            html: 'Please check your internet connection and try again.<br><b>The page will now reload.</b>'
+        }).then(() => {
+            window.location.reload()
+        });
+    }
+}
+
 //  Start Button
 function StartTest(test_id){
     done = 0;
@@ -49,14 +62,14 @@ function StartTest(test_id){
     var bar = $(elems).find("#barDiv").children()[0];
     var prog = $(elems).find("#prog");
     
-    try{
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "http://127.0.0.1:8000/tests/begintest/",
-            data : JSON.stringify({id : test_id}),
-            contentType: "application/json; charset=utf-8"
-        })
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "http://127.0.0.1:8000/tests/begintest/",
+        data : JSON.stringify({id : test_id}),
+        contentType: "application/json; charset=utf-8",
+        error: connectionError()
+    })
     
     $(elems).find("#start").attr("disabled", true);
     $(elems).find("#pause").attr("disabled", false);
@@ -83,23 +96,20 @@ function StartTest(test_id){
         } 
     }, 25);
 }
-    catch(e){
-        console.log(e);
-    }
-}
+
 
 //  Restart
 function RestartTest(test_id) {
-    
+    var elems = $("#test-"+test_id).children();
+    done = 0;
     $.ajax({
         type: "POST",
         dataType: "json",
         url: "http://127.0.0.1:8000/tests/restart/",
         data : JSON.stringify({id : test_id}),
-        contentType: "application/json; charset=utf-8"
+        contentType: "application/json; charset=utf-8",
+        error: connectionError()
     })
-    // Placeholder
-    var elems = $("#test-"+test_id).children();
     $(elems).find("#start").show();
     $(elems).find("#start").attr("disabled", true);
     $(elems).find("#pause").show();
@@ -107,9 +117,8 @@ function RestartTest(test_id) {
     $(elems).find("#stop").show();
     $(elems).find("#edit").attr("disabled", true);
     $(elems).find("#restart").hide();
-    done = 0;
 
-    intervals[test_id] = setInterval(function() {
+    setTimeout(intervals[test_id] = setInterval(function() {
         if(done!= 100){
             done = UpdateTest(test_id);
             $(bar).css('width', done + '%');
@@ -125,10 +134,7 @@ function RestartTest(test_id) {
             $(elems).find("#edit").attr("disabled", false);
             $(elems).find("#restart").show();
         } 
-    }, 100);
-   
-
-    
+    }, 25), 355);   
     
 }
 
@@ -142,7 +148,8 @@ function PauseTest(test_id) {
         dataType: "json",
         url: "http://127.0.0.1:8000/tests/abletorun/",
         data : JSON.stringify({id : test_id}),
-        contentType: "application/json; charset=utf-8"
+        contentType: "application/json; charset=utf-8",
+        error: connectionError()
     })
     $(elems).find("#pause").attr("disabled", true);
     $(elems).find("#start").attr("disabled", false);
@@ -162,7 +169,8 @@ function StopTest(test_id) {
         dataType: "json",
         url: "http://127.0.0.1:8000/tests/stoptest/",
         data : JSON.stringify({id : test_id}),
-        contentType: "application/json; charset=utf-8"
+        contentType: "application/json; charset=utf-8",
+        error: connectionError()
     })
 
     $(elems).find("#stop").attr("disabled", true);
@@ -195,6 +203,11 @@ function UpdateTest(test_id){
         contentType: "application/json; charset=utf-8",
         success: function(response) {
             done = response
+        },
+        error: function() {
+            clearInterval(intervals[test_id]);
+            intervals[test_id] = null;
+            connectionError();
         }
     })
     return done;   
@@ -205,7 +218,7 @@ $(window).on("load",function(){
     $("#tests").hide();
     $("#newTest").hide();
     $.ajax({
-        url: "http://127.0.0.1:8000/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
+        url: "https://measurementtoolbackend.herokuapp.com/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
         dataType: "json",
         success: function( response ) {
             $("#loading").hide();
@@ -234,6 +247,7 @@ $(window).on("load",function(){
             // $("#tests").mCustomScrollbar("update");    
         },        
         error:function(){
+            $("#no_tests").find("p").text("Connection error.");
             $("#no_tests").show();
             $("#loading").hide();
         }

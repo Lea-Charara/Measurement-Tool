@@ -1,6 +1,6 @@
 function on_load(){
     let params = new URLSearchParams(location.search);
-    test_id = params.get('var');
+    test_id = params.get('test_id');
     $.ajax({
         type: "POST",
         url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
@@ -155,7 +155,7 @@ function checkAll(){
     if(checkName() && checkQueryNB() && checkTimeout() && checkQueries()) 
     {
         let params = new URLSearchParams(location.search);
-        test_id = params.get('var');
+        test_id = params.get('test_id');
         $.ajax({
             type: "POST",
             url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
