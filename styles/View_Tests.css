@@ -3,6 +3,11 @@
 * {
     margin: 0;
     background-color: #24252A;
+      box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 li, a {
@@ -35,7 +40,6 @@ p {
 
 div {
     width:100%;
-    height:100%;  
 }
 
 .main{
@@ -94,45 +98,62 @@ div {
     margin: 4px 2px;
     cursor: pointer;
   }
- 
-
-  .column {
+  .col {
     float: left;
-    padding: 10px;
-    height: 800px;
+    width: 100%;
+    padding: 50px;
+    text-align: center;
+    font-size: 25px;
+    cursor: pointer;
+    color: white;
+    border: 1px solid white;
+    border-collapse: collapse;
+    border-color: white;
+  }
+  .containerTab {
+    padding: 20px;
+    color: white;
   }
   
-  .First {
-    width: 20%;
-    
-  }
-  .Second {
-    width: 6.666%;
-    
-  }
-  .Third {
-    width: 6.666%;
-    
-  }
-  .Fourth {
-    width: 6.666%;
-    
-  }
-  .Last {
-    width: 60%;
-  }
-  
+
   .row:after {
     content: "";
     display: table;
     clear: both;
   }
   
+  .closebtn {
+    float: right;
+    color: white;
+    font-size: 35px;
+    cursor: pointer;
+  }
+
+  .column {
+    float: left;
+    padding: 10px;
+    height: 500px;
+  }
+  
+  
+  .Last {
+    width: 100%;
+  }
+
+  .colu {
+    float: left;
+  width: 33.33%;
+  padding: 10px;
+  height: 300px;
+  }
+  
 #rcorners1 {
     border-radius: 25px;
     border: 1px solid white;
     width: 100%;
+    border-collapse: collapse;
     border-color: white; 
+  
   }
   table, th, td {
     border: 1px solid white;
@@ -168,4 +189,3 @@ div {
 .started{
   background-color: limegreen;
 }
-
