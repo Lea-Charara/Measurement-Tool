@@ -53,6 +53,7 @@
         
         .logo {
             cursor: pointer;
+            width: 100%;
         }
         
         .nav__links {
