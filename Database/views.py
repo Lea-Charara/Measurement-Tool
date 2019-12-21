@@ -25,7 +25,6 @@ class AddDatabaseView(APIView):
                     client = pyorient.OrientDB(request.data["host"], int(request.data["port"])) 
                     session_id = client.connect(request.data["user"],request.data["password"])
                     connection = True
-                    
                 except:
                     return Response(status = status.HTTP_400_BAD_REQUEST)
                elif request.data["dbtype"] == "Cassandra":

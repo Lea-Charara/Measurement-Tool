@@ -10,7 +10,7 @@ urlpatterns = [
     path('removetest/', RemoveTestView.as_view()),
     path('progress/', GetProgressView.as_view()),
     path('begintest/',BeginTestView.as_view()),
-    path('progress/',Status.as_view()),
+    path('pause/',Pause.as_view()),
     path('stoptest/',StopTest.as_view()),
     path('restart/',Restart.as_view()),
     
