@@ -33,7 +33,7 @@ function DeleteTest(test_id){
             });
             $.ajax({
                 type: "DELETE",
-                url: "https://measurementtoolbackend.herokuapp.com/tests/removetest/",
+                url: "http://127.0.0.1:8000/tests/removetest/",
                 data : { id : test_id},
                 success: function(){
                     $(test).remove();
@@ -55,6 +55,18 @@ function connectionError(){
     }
 }
 
+function DeletedTestError(){
+    if(!err){
+        err = true;
+        Swal.fire({
+            title: `The test has been deleted`,
+            html: 'The page will now reload.</b>'
+        }).then(() => {
+            window.location.reload()
+        });
+    }
+}
+
 //  Start Button
 function StartTest(test_id){
     done = 0;
@@ -68,7 +80,14 @@ function StartTest(test_id){
         url: "http://127.0.0.1:8000/tests/begintest/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
-        error: connectionError()
+        error:function (xhr){
+            if(xhr.status==400) {
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
+        }
     })
     
     $(elems).find("#start").attr("disabled", true);
@@ -108,7 +127,14 @@ function RestartTest(test_id) {
         url: "http://127.0.0.1:8000/tests/restart/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
-        error: connectionError()
+        error:function (xhr){
+            if(xhr.status==400) {
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
+        }
     })
     $(elems).find("#start").show();
     $(elems).find("#start").attr("disabled", true);
@@ -146,10 +172,17 @@ function PauseTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://127.0.0.1:8000/tests/progress/",
+        url: "http://127.0.0.1:8000/tests/pause/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
-        error: connectionError()
+        error:function (xhr){
+            if(xhr.status==400) {
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
+        }
     })
     $(elems).find("#pause").attr("disabled", true);
     $(elems).find("#start").attr("disabled", false);
@@ -170,7 +203,14 @@ function StopTest(test_id) {
         url: "http://127.0.0.1:8000/tests/stoptest/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
-        error: connectionError()
+        error:function (xhr){
+            if(xhr.status==400) {
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
+        }
     })
 
     $(elems).find("#stop").attr("disabled", true);
@@ -204,11 +244,17 @@ function UpdateTest(test_id){
         success: function(response) {
             done = response
         },
-        error: function() {
-            clearInterval(intervals[test_id]);
-            intervals[test_id] = null;
-            connectionError();
+        error:function (xhr){
+            if(xhr.status==400) {
+                clearInterval(intervals[test_id]);
+                intervals[test_id] = null;
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
         }
+       
     })
     return done;   
 }
@@ -218,7 +264,7 @@ $(window).on("load",function(){
     $("#tests").hide();
     $("#newTest").hide();
     $.ajax({
-        url: "https://measurementtoolbackend.herokuapp.com/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
+        url: "http://127.0.0.1:8000/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
         dataType: "json",
         success: function( response ) {
             $("#loading").hide();

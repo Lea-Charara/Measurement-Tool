@@ -2,7 +2,7 @@
 function showdb(){
     var responseid;
     $.ajax({
-        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
+        url: "http://127.0.0.1:8000/databases/getdatabases/",
     
         dataType: "json",
         success: function( response ) {
@@ -17,7 +17,7 @@ function showdb(){
                         var resname = "";
                         $.ajax({
                             async: false,
-                            url:"https://measurementtoolbackend.herokuapp.com/types/getypename/",
+                            url:"http://127.0.0.1:8000/types/getypename/",
                             dataType: "json",
                             
                             success: function(res){
@@ -124,7 +124,7 @@ function checkAll(){
     {
         $.ajax({
             type: "POST",
-            url: "https://measurementtoolbackend.herokuapp.com/tests/addtest/",
+            url: "http://127.0.0.1:8000/tests/addtest/",
             // The key needs to match your method's input parameter (case-sensitive).
             data: JSON.stringify({ name: document.getElementById("TestNameField").value,
             description: document.getElementById("DescriptionField").value,
@@ -162,7 +162,7 @@ function checkAll(){
                         $.ajax({
                             
                             type: "POST",
-                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/adddbtest/",
+                            url: "http://127.0.0.1:8000/dbtests/adddbtest/",
                             // The key needs to match your method's input parameter (case-sensitive).
                             data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
                             dbid: dic[querytype][j+1], query : textboxes[i].value}),
@@ -183,8 +183,11 @@ function checkAll(){
             setTimeout(function(){ x.className = x.className.replace("show", ""); window.location.href = 'tests.html'; }, 1500);
                 
         }, 
-        error : function(){
-            alert("Test Name already taken!");
+        error : function(xhr){
+            if(xhr.status == 403)
+                alert("Test Name already taken!");
+            if(xhr.status == 400)
+                alert("Something went wrong!");
         }
             
             });
