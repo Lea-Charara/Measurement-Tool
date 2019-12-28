@@ -54,26 +54,32 @@ class GetDBTestView(APIView):
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
 class GetTimes(APIView):
-    def post(self,request):
+    def post(self, request):
         if "testid" in request.data:
-            if DatabaseTest.objects.filter(Test_id_id = request.data["testid"]).exists():
-                dbtst = list(DatabaseTest.objects.filter(Test_id_id = request.data["testid"]).values()) 
-                Max=0
-                Min=1.7976931348623157e+308
-                average=0
-                for i in range (len(dbtst)):
-                    Values = dbtst[i].Test_Duration
-                    if Values < Min and Values != 0:
-                        Min = Values
-                    if Values > Max and Values !=0:
-                        Max = Values
-                    
-                    average+=Values
-                average = average /len(dbtst)
-                List = [Min, Max, average]
-                return JsonResponse(List,safe=False)
-            return Response(status = status.HTTP_400_BAD_REQUEST)
+            
+            average = []
+            db_name = []
+            test_name = ''
+            test_query=[]
+            TimeOfTest=[]
+            Descriptions=''
+            
+            for dbtest in DatabaseTest.objects.filter(Test_id=request.data["testid"]):
+                
+                test = Test.objects.filter(id=request.data["testid"])[0]
+                
+                db_name.append(str(dbtest.DB_id))
+                test_name = str(dbtest.Test_id)
+                average.append(int(dbtest.Test_Duration)/int(test.repetition))
+                test_query.append(dbtest.query)
+                TimeOfTest.append(dbtest.Test_Duration)
+                Descriptions=test.description
 
+            body = {"average": average, "db_name": db_name, "test_name": test_name,"test_query": test_query,"Test_Duration": TimeOfTest, "Descriptions":Descriptions}
+
+            return Response(status=status.HTTP_202_ACCEPTED, data=body)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class GetProgress(APIView):
     def post(self, request):
