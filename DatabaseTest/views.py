@@ -6,6 +6,7 @@ from Test.models import Test
 from Database.models import Database
 from .models import DatabaseTest
 from django.http import JsonResponse
+from django.db.models import Sum
 
 # Create your views here.
 class AddDBTestView(APIView):
