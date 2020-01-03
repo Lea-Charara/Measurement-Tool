@@ -63,6 +63,7 @@ class GetTimes(APIView):
             test_query=[]
             TimeOfTest=[]
             Descriptions=''
+            Nb_Query = []
             
             for dbtest in DatabaseTest.objects.filter(Test_id=request.data["testid"]):
                 
@@ -71,11 +72,12 @@ class GetTimes(APIView):
                 db_name.append(str(dbtest.DB_id))
                 test_name = str(dbtest.Test_id)
                 average.append(int(dbtest.Test_Duration)/int(test.repetition))
+                Nb_Query.append(int(test.repetition))
                 test_query.append(dbtest.query)
                 TimeOfTest.append(dbtest.Test_Duration)
                 Descriptions=test.description
 
-            body = {"average": average, "db_name": db_name, "test_name": test_name,"test_query": test_query,"Test_Duration": TimeOfTest, "Descriptions":Descriptions}
+            body = {"NB_Query":Nb_Query,"average": average, "db_name": db_name, "test_name": test_name,"test_query": test_query,"Test_Duration": TimeOfTest, "Descriptions":Descriptions}
 
             return Response(status=status.HTTP_202_ACCEPTED, data=body)
 
