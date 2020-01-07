@@ -54,7 +54,7 @@ function openTab(tabName) {
 }
 
 function UpdateTest(id){
-  var done =0;
+  var done =100;
   $.ajax({
     url: "https://127.0.0.1:8000/dbtests/GetProgress/",
     type:"POST",
