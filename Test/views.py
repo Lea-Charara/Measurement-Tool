@@ -88,11 +88,11 @@ def Reset(id):
 def start(testid):
     try:
         test = Test.objects.filter(id=testid)[0]
+        test.Status = 1
+        test.save()
     except:
         return -2
-    test.Status = 1
-    test.save()
-    test = Test.objects.filter(id=testid)[0]
+    
     tests = DatabaseTest.objects.filter(Test_id_id=testid)
     for i in range(len(tests)):
         dbtest = tests[i]
@@ -225,11 +225,12 @@ class Restart(APIView):
 class StopTest(APIView):
     def post(self, request):
         if "id" in request.data:
+            Reset(request.data["id"])
             test = Test.objects.filter(id=request.data["id"])[0]
+            test.Progress = 0
             test.Status = 0
             test.save()
             tests = DatabaseTest.objects.filter(Test_id_id=request.data["id"])
-            Reset(request.data["id"])
             return Response(status = status.HTTP_200_OK)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
