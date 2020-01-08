@@ -34,6 +34,7 @@ $(window).on('load',function(){
             }
         },
         error:function(){
+            $("#no_DBs").find("p").text("Connection error.");
             $("#no_DBs").show();
             $("#loading").hide();
         }
