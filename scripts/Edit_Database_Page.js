@@ -3,7 +3,7 @@ function onload(){
     db_id = params.get('db_id');
     $.ajax({
         type: "POST",
-        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabase/",
+        url: "http://127.0.0.1:8000/databases/getdatabase/",
         data: JSON.stringify({id : db_id}),
         contentType: "application/json",
         success: function(response){
@@ -65,7 +65,7 @@ function myFunction() {
     db_id = params.get('db_id');
     $.ajax({
         type: "POST",
-        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabase/",
+        url: "http://127.0.0.1:8000/databases/getdatabase/",
         data : JSON.stringify({"id" : db_id}),
         contentType: "application/json; charset=utf-8",
         success: function(response) {
@@ -98,7 +98,7 @@ function myFunction() {
             $.ajax({
 
                 type: "POST",
-                    url: "https://measurementtoolbackend.herokuapp.com/databases/updatedatabase/",
+                    url: "http://127.0.0.1:8000/databases/updatedatabase/",
                     contentType: "application/json; charset=utf-8",
                     data : JSON.stringify(req),
                     success: function(){

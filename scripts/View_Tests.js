@@ -9,7 +9,7 @@ var today = new Date();
 $(window).on('load',function(){
 
   $.ajax({
-    url: "https://measurementtoolbackend.herokuapp.com/dbtests/Times/",
+    url: "http://127.0.0.1:8000/dbtests/Times/",
     type:"POST",
     data:{testid: id},
     dataType:"json",

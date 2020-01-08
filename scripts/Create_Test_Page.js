@@ -44,7 +44,7 @@ function checkName(){
 }
 
 function checkQueryNB(){
-    if(document.getElementById("QueryNBField").value.length > 0 && document.getElementById("QueryNBField").value <= 30 && document.getElementById("QueryNBField").value > 0){
+    if(document.getElementById("QueryNBField").value.length > 0 && document.getElementById("QueryNBField").value <= 500 && document.getElementById("QueryNBField").value > 0){
         return true;
     }
     alert("Number of query repetitions should be less than 30");

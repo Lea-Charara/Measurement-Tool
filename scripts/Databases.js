@@ -8,7 +8,7 @@ $(window).on('load',function(){
     $("#databases").hide();
     $("#newDB").hide();
     $.ajax({
-        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
+        url: "http://127.0.0.1:8000/databases/getdatabases/",
     
         dataType: "json",
         success: function( response ) {
@@ -53,7 +53,7 @@ function deletedb(db_id){
     var noquery = 0;
     $.ajax({
         type: "POST",
-        url: "https://measurementtoolbackend.herokuapp.com/databases/affectedtests/",
+        url: "http://127.0.0.1:8000/databases/affectedtests/",
         data : { id : db_id},
         success: function( response ){
             if(response.length != 0){
@@ -77,7 +77,7 @@ function deletedb(db_id){
                         });
                         $.ajax({
                             type: "DELETE",
-                            url: "https://measurementtoolbackend.herokuapp.com/databases/removedatabase/",
+                            url: "http://127.0.0.1:8000/databases/removedatabase/",
                             data : { id : db_id},
                             success: function(){
                                 $(db).remove();
