@@ -41,7 +41,7 @@ function myFunction() {
          
       $.ajax({
             type: "POST",
-            url: "http://127.0.0.1:8000/databases/adddatabase/",
+            url: "https://measurementtoolbackend.herokuapp.com/databases/adddatabase/",
             // The key needs to match your method's input parameter (case-sensitive).
             data:JSON.stringify({name:document.getElementById("InputName").value,
             user: document.getElementById("InputUser").value,

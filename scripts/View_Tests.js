@@ -9,7 +9,7 @@ var today = new Date();
 $(window).on('load',function(){
 
   $.ajax({
-    url: "http://127.0.0.1:8000/dbtests/Times/",
+    url: "https://measurementtoolbackend.herokuapp.com/dbtests/Times/",
     type:"POST",
     data:{testid: id},
     dataType:"json",
@@ -56,7 +56,7 @@ function openTab(tabName) {
 function UpdateTest(id){
   var done =100;
   $.ajax({
-    url: "https://127.0.0.1:8000/dbtests/GetProgress/",
+    url: "https://measurementtoolbackend.herokuapp.com/dbtests/GetProgress/",
     type:"POST",
     data:{testid: id},
     dataType:"json",

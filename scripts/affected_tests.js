@@ -15,7 +15,7 @@ function Cancel(){
 function Delete(){      
     $.ajax({
         type: "DELETE",
-        url: "http://127.0.0.1:8000/databases/removedatabase/",
+        url: "https://measurementtoolbackend.herokuapp.com/databases/removedatabase/",
         data : { id : db_id},
         success: function(){
             Toast.fire({
@@ -30,7 +30,7 @@ $(window).on('load',function(){
     if(db_id)
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8000/databases/getaffectedtests/",
+        url: "https://measurementtoolbackend.herokuapp.com/databases/getaffectedtests/",
         data: JSON.stringify({id : db_id}),
         contentType: "application/json",
         success: function(response){

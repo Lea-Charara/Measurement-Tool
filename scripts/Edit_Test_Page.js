@@ -3,7 +3,7 @@ function on_load(){
     test_id = params.get('test_id');
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8000/tests/gettest/",
+        url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
         data: JSON.stringify({id : test_id}),
         contentType: "application/json",
         success: function(response){
@@ -15,7 +15,7 @@ function on_load(){
         }
     });
     $.ajax({
-        url: "http://127.0.0.1:8000/databases/getdatabases/",
+        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
         dataType: "json",
         success: function( response ) {
             var databasetype = [];
@@ -28,7 +28,7 @@ function on_load(){
                         var resname = "";
                         $.ajax({
                             async: false,
-                            url:"http://127.0.0.1:8000/types/getypename/",
+                            url:"https://measurementtoolbackend.herokuapp.com/types/getypename/",
                             dataType: "json",
                             
                             success: function(res){
@@ -44,7 +44,7 @@ function on_load(){
             }
 });
     $.ajax({
-        url : "http://127.0.0.1:8000/dbtests/getdbtests/",
+        url : "https://measurementtoolbackend.herokuapp.com/dbtests/getdbtests/",
         type : "POST",
         data : JSON.stringify({testid : test_id}),
         contentType: "application/json",
@@ -158,7 +158,7 @@ function checkAll(){
         test_id = params.get('test_id');
         $.ajax({
             type: "POST",
-            url: "http://127.0.0.1:8000/tests/gettest/",
+            url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
             data : JSON.stringify({"id" : test_id}),
             contentType: "application/json; charset=utf-8",
             success: function(response) {
@@ -181,13 +181,13 @@ function checkAll(){
                 
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:8000/tests/updatetest/",
+                    url: "https://measurementtoolbackend.herokuapp.com/tests/updatetest/",
                     contentType: "application/json; charset=utf-8",
                     data : JSON.stringify(req),
                     success: function(){
                         $.ajax({
                             type: "DELETE",
-                            url: "http://127.0.0.1:8000/dbtests/removedbtestid/",
+                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/removedbtestid/",
                             contentType: "application/json; charset=utf-8",
                             data : JSON.stringify({"testid":test_id}),
                             success: function(){
@@ -223,7 +223,7 @@ function checkAll(){
                                         $.ajax({
                                             
                                             type: "POST",
-                                            url: "http://127.0.0.1:8000/dbtests/adddbtest/",
+                                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/adddbtest/",
                                             // The key needs to match your method's input parameter (case-sensitive).
                                             data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
                                             dbid: dic[querytype][j+1], query : textboxes[i].value}),

@@ -33,7 +33,7 @@ function DeleteTest(test_id){
             });
             $.ajax({
                 type: "DELETE",
-                url: "http://127.0.0.1:8000/tests/removetest/",
+                url: "https://measurementtoolbackend.herokuapp.com/tests/removetest/",
                 data : { id : test_id},
                 success: function(){
                     $(test).remove();
@@ -77,7 +77,7 @@ function StartTest(test_id){
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://127.0.0.1:8000/tests/begintest/",
+        url: "https://measurementtoolbackend.herokuapp.com/tests/begintest/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
         error:function (xhr){
@@ -124,7 +124,7 @@ function RestartTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://127.0.0.1:8000/tests/restart/",
+        url: "https://measurementtoolbackend.herokuapp.com/tests/restart/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
         error:function (xhr){
@@ -172,7 +172,7 @@ function PauseTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://127.0.0.1:8000/tests/pause/",
+        url: "https://measurementtoolbackend.herokuapp.com/tests/pause/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
         error:function (xhr){
@@ -200,7 +200,7 @@ function StopTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://127.0.0.1:8000/tests/stoptest/",
+        url: "https://measurementtoolbackend.herokuapp.com/tests/stoptest/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
         error:function (xhr){
@@ -238,7 +238,7 @@ function UpdateTest(test_id){
     $.ajax({
         async: false,
         type: "POST",
-        url: "http://127.0.0.1:8000/tests/progress/",
+        url: "https://measurementtoolbackend.herokuapp.com/tests/progress/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
         success: function(response) {
@@ -266,7 +266,7 @@ $(window).on("load",function(){
     $("#tests").hide();
     $("#newTest").hide();
     $.ajax({
-        url: "http://127.0.0.1:8000/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
+        url: "https://measurementtoolbackend.herokuapp.com/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ https://measurementtoolbackend.herokuapp.com/
         dataType: "json",
         success: function( response ) {
             $("#loading").hide();
@@ -281,7 +281,7 @@ $(window).on("load",function(){
 
                     $("#tests").append('<div class ="test" id="test-'+test.id+'"><div class="up"><p>'+test.name+'</p><button type="button" id="delete" class="button" onclick="DeleteTest('+test.id+')" style="float: right; color: red;"><i class="fa fa-times" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button></div><div class="inner"><div class="loadbar w3-round-xlarge" id="barDiv" style="width: 70%"><div id="bar" class="'+((test.Progress == 100)?"started":"loadbar")+' w3-round-xlarge" style="width:'+test.Progress+'%;height: 20px; padding:0"></div></div>&emsp;<span id="prog" style="width:5%;">'+test.Progress+'%</span>&emsp;<button type="button" id="start" class="button" onclick="StartTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':'')+'><i class="fa fa-play" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="pause" class="button" onclick="PauseTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':'')+' disabled><i class="fa fa-pause" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="stop" class="button" onclick="StopTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':(test.Progress == 0)?"disabled":'')+'><i class="fa fa-stop" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="restart" class="button" onclick="RestartTest('+test.id+')"'+ ((test.Progress != 100)?'style="display:none;"':'')+'><i class="fa fa-repeat" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button>&emsp;&emsp;<button type="button" id="edit" class="button" onClick="Edit('+test.id+')"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="view" class="button" onClick="View('+test.id+')"><i class="fa fa-eye" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button></div>');
                     
-                    if(test.Status == 1)
+                    if(test.Status ==1)
                         PauseTest(test.id);
                 }
             }
