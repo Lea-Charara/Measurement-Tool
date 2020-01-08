@@ -1,9 +1,9 @@
 function on_load(){
     let params = new URLSearchParams(location.search);
-    test_id = params.get('var');
+    test_id = params.get('test_id');
     $.ajax({
         type: "POST",
-        url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
+        url: "http://127.0.0.1:8000/tests/gettest/",
         data: JSON.stringify({id : test_id}),
         contentType: "application/json",
         success: function(response){
@@ -15,27 +15,28 @@ function on_load(){
         }
     });
     $.ajax({
-        url: "https://measurementtoolbackend.herokuapp.com/databases/getdatabases/",
+        url: "http://127.0.0.1:8000/databases/getdatabases/",
         dataType: "json",
         success: function( response ) {
             var databasetype = [];
                 for(i = 0;i < response.length;i++){
-                    $("#db ul li:last").after('<input class= "checkbox '+ response[i].dbtype_id+' '+ response[i].name +
-                    '" id = '+ response[i].id+' type="checkbox" onchange="TextBoxAppear()"/> '+response[i].name+'<br />');
-                    if(!databasetype.includes(response[i].dbtype_id)){
-                        databasetype.push(response[i].dbtype_id);
-                        var responseid = response[i];
+                    $("#db ul li:last").after('<input class= "checkbox '+ response[i][0].dbtype_id+' '+ response[i][0].name +
+                    '" id = '+ response[i][0].id+' type="checkbox" onchange="TextBoxAppear()"/> '+response[i][0].name+'<br />');
+                    if(!databasetype.includes(response[i][0].dbtype_id)){
+                        databasetype.push(response[i][0].dbtype_id);
+                        var responseid = response[i][0];
                         var resname = "";
                         $.ajax({
                             async: false,
-                            url:"https://measurementtoolbackend.herokuapp.com/types/getypename/",
+                            url:"http://127.0.0.1:8000/types/getypename/",
                             dataType: "json",
                             
                             success: function(res){
                                 resname = res[responseid.dbtype_id-1].typename;
                             }
                         });
-                        $("#QueriesContainer").append('<input class="queries '+ response[i].dbtype_id+ ' '+ response[i].name+'" type="text" placeholder='+ resname +' value = ""><br />');
+                        
+                        $("#QueriesContainer").append('<input class="queries '+ responseid.dbtype_id+ ' '+ responseid.name+'" type="text" placeholder='+ resname +' value = ""><br />');
                         
                     }
 
@@ -43,15 +44,17 @@ function on_load(){
             }
 });
     $.ajax({
-        url : "https://measurementtoolbackend.herokuapp.com/dbtests/getdbtests/",
+        url : "http://127.0.0.1:8000/dbtests/getdbtests/",
         type : "POST",
         data : JSON.stringify({testid : test_id}),
         contentType: "application/json",
         success: function(response){
             var i;
+            
             for(i=0;i<response.length;i++){
                 temp = response[i].query
                 db = document.getElementById(response[i].DB_id_id)
+                console.log(db)
                 db.checked = true;
                 type = $(db).attr('class').split(' ')[1];
                 TextBoxAppear()
@@ -73,7 +76,7 @@ function checkName(){
 }
 
 function checkQueryNB(){
-    if(document.getElementById("QueryNBField").value.length > 0 && document.getElementById("QueryNBField").value <= 30 && document.getElementById("QueryNBField").value > 0){
+    if(document.getElementById("QueryNBField").value.length > 0 && document.getElementById("QueryNBField").value <= 500 && document.getElementById("QueryNBField").value > 0){
         return true;
     }
     alert("Number of query repetitions should be less than 30");
@@ -152,10 +155,10 @@ function checkAll(){
     if(checkName() && checkQueryNB() && checkTimeout() && checkQueries()) 
     {
         let params = new URLSearchParams(location.search);
-        test_id = params.get('var');
+        test_id = params.get('test_id');
         $.ajax({
             type: "POST",
-            url: "https://measurementtoolbackend.herokuapp.com/tests/gettest/",
+            url: "http://127.0.0.1:8000/tests/gettest/",
             data : JSON.stringify({"id" : test_id}),
             contentType: "application/json; charset=utf-8",
             success: function(response) {
@@ -178,13 +181,13 @@ function checkAll(){
                 
                 $.ajax({
                     type: "POST",
-                    url: "https://measurementtoolbackend.herokuapp.com/tests/updatetest/",
+                    url: "http://127.0.0.1:8000/tests/updatetest/",
                     contentType: "application/json; charset=utf-8",
                     data : JSON.stringify(req),
                     success: function(){
                         $.ajax({
                             type: "DELETE",
-                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/removedbtestid/",
+                            url: "http://127.0.0.1:8000/dbtests/removedbtestid/",
                             contentType: "application/json; charset=utf-8",
                             data : JSON.stringify({"testid":test_id}),
                             success: function(){
@@ -220,7 +223,7 @@ function checkAll(){
                                         $.ajax({
                                             
                                             type: "POST",
-                                            url: "https://measurementtoolbackend.herokuapp.com/dbtests/adddbtest/",
+                                            url: "http://127.0.0.1:8000/dbtests/adddbtest/",
                                             // The key needs to match your method's input parameter (case-sensitive).
                                             data: JSON.stringify({ testid : document.getElementById("TestNameField").value,
                                             dbid: dic[querytype][j+1], query : textboxes[i].value}),

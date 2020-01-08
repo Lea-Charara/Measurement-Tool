@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:500');
 
 * {
-    box-sizing: border-box;
     margin: 0;
-    padding: 3px;
     background-color: #24252A;
+      box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 li, a {
@@ -37,7 +40,6 @@ p {
 
 div {
     width:100%;
-    height:100%;  
 }
 
 .main{
@@ -85,8 +87,8 @@ div {
     border-radius: 50px;	
 }
 .button {
-    background-color: rgb(0, 255, 0);
-    border: none;
+    background-color: green;
+    border: green;
     color: white;
     padding: 15px 32px;
     text-align: center;
@@ -96,54 +98,65 @@ div {
     margin: 4px 2px;
     cursor: pointer;
   }
-  * {
-    box-sizing: border-box;
-  }
-
-  .column {
+  .col {
     float: left;
-    padding: 10px;
-    height: 800px;
-    border: 1px solid black;
+    width: 100%;
+    padding: 50px;
+    text-align: center;
+    font-size: 25px;
+    cursor: pointer;
+    color: white;
+    border: 1px solid white;
+    border-collapse: collapse;
     border-color: white;
   }
-  
-  .First {
-    width: 20%;
-    
-  }
-  .Second {
-    width: 6.666%;
-    
-  }
-  .Third {
-    width: 6.666%;
-    
-  }
-  .Fourth {
-    width: 6.666%;
-    
-  }
-  .Last {
-    width: 60%;
+  .containerTab {
+    padding: 20px;
+    color: white;
   }
   
+
   .row:after {
     content: "";
     display: table;
     clear: both;
   }
   
+  .closebtn {
+    float: right;
+    color: white;
+    font-size: 35px;
+    cursor: pointer;
+  }
+
+  .column {
+    float: left;
+    padding: 10px;
+    height: 500px;
+  }
+  
+  
+  .Last {
+    width: 100%;
+  }
+
+  .colu {
+    float: left;
+  width: 33.33%;
+  padding: 10px;
+  height: 300px;
+  }
+  
 #rcorners1 {
     border-radius: 25px;
-    border: 2px solid black;
-    padding: 20px; 
-    width: 800px;
-    height: 30px; 
+    border: 1px solid white;
+    width: 100%;
+    border-collapse: collapse;
     border-color: white; 
+  
   }
   table, th, td {
-    border: 3px solid black;
+    border: 1px solid white;
     border-collapse: collapse;
     color: white;
     border-color: white;
@@ -170,3 +183,9 @@ div {
     display: inline-block;
   }
 
+  .loadbar{
+    background-color: #edf0f1;
+}
+.started{
+  background-color: limegreen;
+}

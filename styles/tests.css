@@ -22,17 +22,13 @@
             padding: 30px 10%;    
         }
         
-        p {
+        span,p {
+            display: inline;
             font-family: "Montserrat", sans-serif;
             font-weight: 500;
             font-size: 20px;
             color: #edf0f1;
             text-decoration: none;
-        }
-        
-        div {
-            width:100%;
-            
         }
         
         .main{
@@ -58,6 +54,7 @@
         
         .logo {
             cursor: pointer;
+            width: 100%;
         }
         
         .nav__links {
@@ -107,6 +104,14 @@
             justify-content: space-around;
         }
 
+        .up {
+            width:100%;
+            display:inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            margin:0px auto;
+          }
+
         .loadbar{
             background-color: #edf0f1;
         }
@@ -139,5 +144,5 @@
 
         button:disabled{
             cursor: default;
-            color: #A4A4A4
+            color: #A4A4A4 !important
         }

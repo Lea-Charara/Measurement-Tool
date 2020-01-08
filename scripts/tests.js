@@ -1,17 +1,71 @@
 var intervals = {};
+var err = false;
 
 // Edit button
 
-$("#tests").on('click','#edit', function(){
-    var elems = $(this).parent();
-    var testID = parseInt($(elems).parent().attr('id').split('-')[1]);
+function Edit(test_id){
+    location.href = "Edit_Test_Page.html?test_id="+test_id;
+}
 
-    location.href = "Edit_Test_Page.html?var="+testID;
+//  View Button
 
-});
+function View(test_id){
+    location.href = "View_Tests.html?test_id="+test_id;
+};
 
+//  Delete Button
 
-//  I kept the localhost for you to test when done change it back to measurementtoolbackend
+function DeleteTest(test_id){
+    var test = $("#test-"+test_id);
+    var tests = $(test).siblings().length;
+    Swal.fire({
+        title: `Are you sure you want to delete ${$(test).children().find("p").text()}?`,
+        showCancelButton: true,
+        confirmButtonColor: 'rgb(0,136,169)',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if(result.value){
+          // $(test).children().find(".button").attr("disabled", true);
+            $(test).fadeOut(200, function() {
+                if(tests <= 4)
+                $("#tests").mCustomScrollbar("destroy");
+            });
+            $.ajax({
+                type: "DELETE",
+                url: "http://127.0.0.1:8000/tests/removetest/",
+                data : { id : test_id},
+                success: function(){
+                    $(test).remove();
+                }
+            })  
+        }
+    })
+}
+
+function connectionError(){
+    if(!err){
+        err = true;
+        Swal.fire({
+            title: `Connection Error`,
+            html: 'Please check your internet connection and try again.<br><br><b>The page will now reload.</b>'
+        }).then(() => {
+            window.location.reload()
+        });
+    }
+}
+
+function DeletedTestError(){
+    if(!err){
+        err = true;
+        Swal.fire({
+            title: `The test has been deleted`,
+            html: 'The page will now reload.</b>'
+        }).then(() => {
+            window.location.reload()
+        });
+    }
+}
 
 //  Start Button
 function StartTest(test_id){
@@ -20,29 +74,26 @@ function StartTest(test_id){
     var bar = $(elems).find("#barDiv").children()[0];
     var prog = $(elems).find("#prog");
     
-    try{
-    //  New start
-    if($(bar).hasClass("loadbar"))    
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "https://measurementtoolbackend.herokuapp.com/tests/begintest/",
-            data : JSON.stringify({id : test_id}),
-            contentType: "application/json; charset=utf-8"
-        })
-    //  Unpause
-    else if($(bar).hasClass("paused"))
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "https://measurementtoolbackend.herokuapp.com/tests/continuetest/",
-            data : JSON.stringify({id : test_id}),
-            contentType: "application/json; charset=utf-8"
-        })
-
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "http://127.0.0.1:8000/tests/begintest/",
+        data : JSON.stringify({id : test_id}),
+        contentType: "application/json; charset=utf-8",
+        error:function (xhr){
+            if(xhr.status==400) {
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
+        }
+    })
+    
     $(elems).find("#start").attr("disabled", true);
     $(elems).find("#pause").attr("disabled", false);
     $(elems).find("#stop").attr("disabled", false);
+    $(elems).find("#delete").attr("disabled", true);
     $(elems).find("#edit").attr("disabled", true);
     $(bar).removeClass("loadbar paused stopped").addClass("started");
     done = UpdateTest(test_id);
@@ -56,13 +107,63 @@ function StartTest(test_id){
         {
             clearInterval(intervals[test_id]);
             intervals[test_id] = null;
+            $(elems).find("#start").hide();
+            $(elems).find("#pause").hide();
+            $(elems).find("#stop").hide();
+            $(elems).find("#edit").attr("disabled", false);
+            $(elems).find("#restart").show();
         } 
-    }, 1);
+    }, 25);
 }
-    catch(e){
-        console.log(e);
-    }
+
+
+//  Restart
+function RestartTest(test_id) {
+    var elems = $("#test-"+test_id).children();
+    done = 0;
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "http://127.0.0.1:8000/tests/restart/",
+        data : JSON.stringify({id : test_id}),
+        contentType: "application/json; charset=utf-8",
+        error:function (xhr){
+            if(xhr.status==400) {
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
+        }
+    })
+    $(elems).find("#start").show();
+    $(elems).find("#start").attr("disabled", true);
+    $(elems).find("#pause").show();
+    $(elems).find("#pause").attr("disabled", false);
+    $(elems).find("#stop").show();
+    $(elems).find("#edit").attr("disabled", true);
+    $(elems).find("#restart").hide();
+
+    setTimeout(intervals[test_id] = setInterval(function() {
+        if(done!= 100){
+            done = UpdateTest(test_id);
+            $(bar).css('width', done + '%');
+            $(prog).text(done * 1  + '%');
+        }
+        else
+        {
+            clearInterval(intervals[test_id]);
+            intervals[test_id] = null;
+            $(elems).find("#start").hide();
+            $(elems).find("#pause").hide();
+            $(elems).find("#stop").hide();
+            $(elems).find("#edit").attr("disabled", false);
+            $(elems).find("#restart").show();
+        } 
+    }, 25), 355);   
+    
 }
+
 
 //  Pause Button
 function PauseTest(test_id) {
@@ -71,13 +172,22 @@ function PauseTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://measurementtoolbackend.herokuapp.com/tests/abletorun/",
+        url: "http://127.0.0.1:8000/tests/pause/",
         data : JSON.stringify({id : test_id}),
-        contentType: "application/json; charset=utf-8"
+        contentType: "application/json; charset=utf-8",
+        error:function (xhr){
+            if(xhr.status==400) {
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
+        }
     })
     $(elems).find("#pause").attr("disabled", true);
     $(elems).find("#start").attr("disabled", false);
     $(elems).find("#stop").attr("disabled", false);
+    $(elems).find("#delete").attr("disabled", false);
     clearInterval(intervals[test_id]);
     $(bar).removeClass("loadbar started stopped").addClass("paused");
 }
@@ -90,15 +200,24 @@ function StopTest(test_id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://measurementtoolbackend.herokuapp.com/tests/stoptest/",
+        url: "http://127.0.0.1:8000/tests/stoptest/",
         data : JSON.stringify({id : test_id}),
-        contentType: "application/json; charset=utf-8"
+        contentType: "application/json; charset=utf-8",
+        error:function (xhr){
+            if(xhr.status==400) {
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
+        }
     })
 
     $(elems).find("#stop").attr("disabled", true);
     $(elems).find("#start").attr("disabled", true);
     $(elems).find("#pause").attr("disabled", true);
     $(elems).find("#edit").attr("disabled", false);
+    $(elems).find("#delete").attr("disabled", false);
     $(bar).removeClass("loadbar started paused").addClass("stopped");
 
     clearInterval(intervals[test_id]);
@@ -119,22 +238,35 @@ function UpdateTest(test_id){
     $.ajax({
         async: false,
         type: "POST",
-        url: "https://measurementtoolbackend.herokuapp.com/tests/progress/",
+        url: "http://127.0.0.1:8000/tests/progress/",
         data : JSON.stringify({id : test_id}),
         contentType: "application/json; charset=utf-8",
         success: function(response) {
             done = response
+        },
+        error:function (xhr){
+            if(xhr.status==400) {
+                clearInterval(intervals[test_id]);
+                intervals[test_id] = null;
+                connectionError()
+            }
+            if(xhr.status==404) {
+                DeletedTestError()
+            }
         }
+       
     })
     return done;   
 }
+
+
 
 $(window).on("load",function(){
     $("#no_tests").hide();
     $("#tests").hide();
     $("#newTest").hide();
     $.ajax({
-        url: "https://measurementtoolbackend.herokuapp.com/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
+        url: "http://127.0.0.1:8000/tests/gettests/", //https://measurementtoolbackend.herokuapp.com/ http://127.0.0.1:8000/
         dataType: "json",
         success: function( response ) {
             $("#loading").hide();
@@ -145,17 +277,26 @@ $(window).on("load",function(){
                 $("#newTest").show();
                 for(i = 0;i < response.length;i++){
                     var test = response[i];
-                    $("#tests").append('<div class ="test" id="test-'+test.id+'"><p>'+test.name+'</p><div class="inner"><div class="loadbar w3-round-xlarge" id="barDiv" style="width: 70%"><div id="bar" class="loadbar w3-round-xlarge" style="width:'+test.Progress+'%;height: 20px"></div></div>&emsp;<p id="prog">'+test.Progress+'%</p>&emsp;<button type="button" id="start" class="button" onclick="StartTest('+test.id+')"><i class="fa fa-play" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="pause" class="button" onclick="PauseTest('+test.id+')" disabled><i class="fa fa-pause" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="stop" class="button" onclick="StopTest('+test.id+')" disabled><i class="fa fa-stop" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button>&emsp;&emsp;<button type="button" id="edit" class="button"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button><i id="view" class="fa fa-eye" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></div>');
                     intervals[test.id]=null;
+
+                    $("#tests").append('<div class ="test" id="test-'+test.id+'"><div class="up"><p>'+test.name+'</p><button type="button" id="delete" class="button" onclick="DeleteTest('+test.id+')" style="float: right; color: red;"><i class="fa fa-times" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button></div><div class="inner"><div class="loadbar w3-round-xlarge" id="barDiv" style="width: 70%"><div id="bar" class="'+((test.Progress == 100)?"started":"loadbar")+' w3-round-xlarge" style="width:'+test.Progress+'%;height: 20px; padding:0"></div></div>&emsp;<span id="prog" style="width:5%;">'+test.Progress+'%</span>&emsp;<button type="button" id="start" class="button" onclick="StartTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':'')+'><i class="fa fa-play" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="pause" class="button" onclick="PauseTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':'')+' disabled><i class="fa fa-pause" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="stop" class="button" onclick="StopTest('+test.id+')"'+((test.Progress == 100)?'style="display:none;"':(test.Progress == 0)?"disabled":'')+'><i class="fa fa-stop" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="restart" class="button" onclick="RestartTest('+test.id+')"'+ ((test.Progress != 100)?'style="display:none;"':'')+'><i class="fa fa-repeat" style="font-size:17px;text-shadow:5px 4px 6px #000000;"></i></button>&emsp;&emsp;<button type="button" id="edit" class="button" onClick="Edit('+test.id+')"><i class="fa fa-edit" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button><button type="button" id="view" class="button" onClick="View('+test.id+')"><i class="fa fa-eye" style="font-size:20px;text-shadow:5px 4px 6px #000000;"></i></button></div>');
+                    
+                    if(test.Status == 1)
+                        PauseTest(test.id);
                 }
             }
-            $(".tests").mCustomScrollbar({
-                axis:"y",
-                theme: "minimal",
-                setHeight: "20%"
+            if(response.length > 4)
+                $("#tests").mCustomScrollbar({
+                    axis:"y",
+                    theme: "minimal",
+                    setHeight: "20%",
+                    advanced: {updateOnContentResize: true},
+                    scrollInertia: 60
             });
+            // $("#tests").mCustomScrollbar("update");    
         },        
         error:function(){
+            $("#no_tests").find("p").text("Connection error.");
             $("#no_tests").show();
             $("#loading").hide();
         }

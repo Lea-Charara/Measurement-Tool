@@ -53,6 +53,7 @@
         
         .logo {
             cursor: pointer;
+            width: 100%;
         }
         
         .nav__links {
@@ -116,4 +117,5 @@
 
         button:disabled{
             cursor: default;
+            color: #A4A4A4 !important
         }
