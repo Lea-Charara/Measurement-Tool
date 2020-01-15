@@ -19,7 +19,7 @@ class AddTestView(APIView):
 
     def post(self, request):
         
-            if "name" in request.data in request.data and "repetition" in request.data and "timeout" in request.data:
+            if "name" in request.data and "repetition" in request.data and "timeout" in request.data:
                 if not(Test.objects.filter(name=request.data["name"]).exists()):
                     test = Test()
                     test.name = request.data["name"]
